@@ -22,6 +22,14 @@ As a design services company, at [Fidus](http://fidus.com/) we have to be able t
 - Simulation tools support - Cadence Incisive, Aldec Riviera, Synopsys VCS
 - submit jobs to remote machines
 
-
-
-
+# Simple commands
+### Run a single test-case
+```
+cd simu/run
+vsim -c -do "do ../testcases/tc_reset/tc_reset.tcl"
+```
+### Run regression
+```
+cd simu/run
+../scripts_configure/run_regression.tcl
+```
