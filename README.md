@@ -1,5 +1,5 @@
 # SIMU - Simulation Environment for FPGA
-As a design services company, at [Fidus](http://fidus.com/) we have to be able to quickly simulate our FPGA, independent of the underlying OS or tool or FPGA vendor. 
+As a design services company, at [Fidus](http://fidus.com/) we have to be able to quickly simulate our FPGA, independent of the underlying OS, simulation tool or FPGA vendor. 
 - short setup time and learning curve, because we don't like wasting time
 - sticking to simple language constructs for fast ramp-up
 - promote all good practices in the field of verification - regression, randomization, scalability, etc
