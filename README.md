@@ -16,6 +16,7 @@ As a design services company, at [Fidus](http://fidus.com/) we have to be able t
 - Automated regression executing all test-cases named with a with "tc_" prefix 
 - Regression history accumulation
 - Multithreaded regression runs for complex simulation environments, executing many test-cases in parallel, requiring one license per thread
+- send an email when regression is completed
 
 # ToDo List
 - HDL support for VHDL (almost complete), UVM, HLS
