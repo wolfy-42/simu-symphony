@@ -1,4 +1,4 @@
-# SIMU - Simulation Environment for FPGA
+# FPGA simulation framework Symphony
 As a design services company, at [Fidus](http://fidus.com/) we have to be able to quickly simulate our FPGA, independent of the underlying OS, simulation tool or FPGA vendor. 
 - short setup time and learning curve, because we don't like wasting time
 - sticking to simple language constructs for fast ramp-up
@@ -6,31 +6,31 @@ As a design services company, at [Fidus](http://fidus.com/) we have to be able t
 - flexible scripting structure to switch quickly between different OS, HDL languages and simulation tool vendors
 
 # Features
-- HDL supported - SystemVerilog, Verilog
-- Simulation tools supported - Mentor ModelSim/Questa, Vivado XSim
+- HDL supported - SystemVerilog, Verilog, VHDL
+- Simulation tools supported - Mentor ModelSim/Questa, Vivado XSim, Active-HDL
 - TCL based - works inside the tool (Modelsim/Quasta/Vivado) or in OS terminal (Linux/Windows) using the native/installed TCL interpreter 
 - A preset template of a test-case, sticking to the basics, ready to be reused
 - Code Coverage statistics reports
 - Single Randomization seed for the whole environment
 - Pass/Fail statistics per test-case and per regression run
-- Automated regression executing all test-cases named with a with "tc_" prefix 
+- Automated regression executing all test-cases named with a with "tc_" prefix with back-list and white-lists 
 - Regression statistics history accumulation
 - Multithreaded regression runs for complex simulation environments, executing many test-cases in parallel, requiring one license per thread
-- send an email when regression is completed
+- Send an email when regression is completed
 
 # ToDo List
-- HDL support for VHDL (almost complete), UVM, HLS
+- Integrate UVVM, UVM, HLS
 - Simulation tools support - Cadence Incisive, Aldec Riviera, Synopsys VCS
 - submit jobs to remote machines
 
-# Simple commands
+# Simple run commands
 ### Run a single test-case
 ```
-cd simu/run
-vsim -c -do "do ../testcases/tc_reset/tc_reset.tcl"
+cd symphony/sim/run
+vsim -c -do ../testcases/tc_reset/tc_reset.tcl -do quit
 ```
 ### Run regression
 ```
-cd simu/run
-../scripts_configure/run_regression.tcl
+cd symphony/sim/run
+vsim -c -do ../scripts_configure/run_regression.tcl -do quit
 ```
