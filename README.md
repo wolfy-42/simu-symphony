@@ -26,11 +26,11 @@ As a design services company, at [Fidus](http://fidus.com/) we have to be able t
 # Simple run commands
 ### Run a single test-case
 ```
-cd symphony/sim/run
+cd symphony/dev/sim/run
 vsim -c -do ../testcases/tc_reset/tc_reset.tcl -do quit
 ```
 ### Run regression
 ```
-cd symphony/sim/run
+cd symphony/dev/sim/run
 vsim -c -do ../scripts_configure/run_regression.tcl -do quit
 ```

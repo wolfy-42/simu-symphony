@@ -1,0 +1,1 @@
+qsys-generate intel_avalon_example_system.qsys --testbench=standard --testbench-simulation=verilog

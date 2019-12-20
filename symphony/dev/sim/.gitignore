@@ -1,0 +1,8 @@
+
+regression_results/*
+result_rtl
+transcript
+scripts_config/scripts_lib/auto_gen
+_run*
+bfms/xilinx_axi_vip/
+
