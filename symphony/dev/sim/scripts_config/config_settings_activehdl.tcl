@@ -1,14 +1,15 @@
 # ---------------------------------------------------------------------------//
-#
-# Copyright (C) 2006 Fidus Systems Inc.
+# Copyright (C) 2006-2023 Fidus Systems Inc. 
+# SPDX-License-Identifier: Apache-2.0 OR MIT
+# The licenses stated above take precedence over any other contracts, agreements, etc.
 #
 # Project       : simu
 # Author        : Dessislav Valkov
-# Created       : 2019-09-06 
+# Created       : 2019-09-06
 # ---------------------------------------------------------------------------//
 # ---------------------------------------------------------------------------//
 # Description   : Active-HDL vsim environment configuration functions and variables
-#     IMPORTANT : Tool revision being tested with is listed in the build 
+#     IMPORTANT : Tool revision being tested with is listed in the build
 #                 script located in the run folder
 #
 # Updated       : date / author - comments
@@ -19,10 +20,64 @@
 # --------------------------------------------------------------------//
 # See compile_all....tcl under any testcase for example compiler options
 
-puts stdout "==============config_settings_activehdl.tcl================\n"
+puts_debug1 "==============config_settings_activehdl.tcl================\n"
 
 # default simulator is Active-HDL only on Windows
 set ::DEFAULT_SIMULATOR ahdl_sh
+
+##################### Code compile ###########################
+# timescale compile option
+set TIMESCALE_OPT "-timescale" 
+set TCTIMESCALE 1ns/100ps
+set INCDIR_OPT "+incdir+"
+set DEFINE_OPT "+define+"
+
+# compile libs used
+# TODO: check this var for libs if used anywhere
+# set design libraries VSCMPL_LIBS
+set VSCMPL_LIBS " "
+# command for redirect to stdout, TCLSH interpreter need it to show compile and simulation log
+if {$::CMD_ARG_SIMVENTCL == 1} {
+set REDIRECTSTD " "
+} else {
+set REDIRECTSTD " >&@stdout "
+}
+
+# Current test-case location, evaluated later during last step of execution (using curly braces for delayied execution)
+# global declaration is needed for regression runs
+global TCSUBDIR
+global CURRENT_TCSUBDIR
+set CURRENT_TCSUBDIR {$::TCSUBDIR}
+global TCFILENAME
+global CURRENT_TCFILENAME
+set CURRENT_TCFILENAME {$::TCFILENAME}
+
+
+##################### Text logs clearing ###########################
+# proc text_logs_init {}
+# Purpose: Procedure which ensures a fresh compile/simulation logs
+# Inputs none. - Uses the global variables for testcase name and the module folder name.
+# Outputs: none.
+proc text_logs_init {} {
+    puts_debug2 "==============config_settings_activehdl::text_logs_init TODO: fix================\n"
+
+    # delete old logs
+    puts "Delete old logs..." 
+    file delete -force [subst $::CURRENT_TCSUBDIR/result_rtl/$::CURRENT_TCFILENAME.cmpl.log]
+    file delete -force [subst $::CURRENT_TCSUBDIR/result_rtl/$::CURRENT_TCFILENAME.log]
+    file delete -force [subst $::CURRENT_TCSUBDIR/result_rtl/$::CURRENT_TCFILENAME.cmpl.vhdl.log]
+    file delete -force [subst $::CURRENT_TCSUBDIR/result_rtl/$::CURRENT_TCFILENAME.cmpl.vlog.log]
+    file delete -force [subst $::CURRENT_TCSUBDIR/result_rtl/$::CURRENT_TCFILENAME.elab.log]
+    file delete -force [subst $::CURRENT_TCSUBDIR/result_rtl/$::CURRENT_TCFILENAME.sim.log]
+    file delete -force [subst $::CURRENT_TCSUBDIR/result_rtl/$::CURRENT_TCFILENAME.cmpl.tmp_simu_log.log]
+    file delete -force [subst $::CURRENT_TCSUBDIR/result_rtl/$::CURRENT_TCFILENAME.wlf]
+    file delete -force [subst $::CURRENT_TCSUBDIR/result_rtl/$::CURRENT_TCFILENAME.cov]
+    file delete -force [subst $::CURRENT_TCSUBDIR/result_rtl/$::CURRENT_TCFILENAME.rep]
+    file delete -force [subst $::CURRENT_TCSUBDIR/result_rtl/$::CURRENT_TCFILENAME.coverage_report.rep]    
+    #file delete -force [subst $::CURRENT_TCSUBDIR/result_rtl/$::CURRENT_TCFILENAME.*]
+    puts "Delete old logs comleted." 
+
+}
 
 ##################### Library Mapping ###########################
 # Gets reset before a new compilation.
@@ -32,166 +87,347 @@ set SIM_LIBRARY_DIRNAME asim
 # proc ensure_fresh_lib {}
 # Purpose: Procedure which ensures a fresh library is created.
 # Inputs:
-#        dirName --> Directory where libraries are stored, has to be "xsim.dir" for xsim
-#        name   --> Name of the library to be created.
+#        dir_name   --> Directory where libraries are stored, has to be "xsim.dir" for xsim
+#        lib_name   --> Name of the library to be created.
 # Outputs: none.
-proc ensure_fresh_lib {dir_name name} {
-    puts stdout "==============config_settings_activehdl::ensure_fresh_lib================\n"
-
-    # When in Active-HDL GUI environment
-    if {[string equal $::CMD_ARG_SIMTOOL ahdl_gui]} {
-        if [file exists $dir_name.aws] {
-    
-            if [catch [workspace close] result] {
-                puts stderr "Workspace was not oppen"            
-            }
-    
-            if [catch [file delete -force $dir_name.aws] result] {
-                puts stderr "Could not delete the $dir_name.aws file"
-                puts stderr $result
-            } else {
-                puts stdout "deleted the $dir_name.aws file"
-            }
+proc ensure_fresh_lib {dir_name lib_name} {
+    puts_debug2 "==============config_settings_activehdl::ensure_fresh_lib================\n"
+    if { ($::CMD_ARG_COMPILE == 0) || ($::CMD_ARG_RTLCOMPILE == 0) } {    
+        puts stdout "Compiled HDL libraries are not deleted!"
+    } else {  
+        if {[file exists $dir_name.aws]} {
+            file delete -force $dir_name.aws
+            puts stdout "deleted the $dir_name.aws directory"
         }
-    }
-
-    if [file exists $dir_name] {
-        if [catch [file delete -force $dir_name] result] {
-            puts stderr "Could not delete the $dir_name directory"
-            puts stderr $result
-        } else {
-            puts stdout "deleted the $dir_name directory"
-        }
-
     }
 
     file mkdir $dir_name
 
     set savedDir [pwd]
-    puts stdout "PWD is $savedDir"  
+    puts stdout "PWD is $savedDir"
+
+    # TODO: fix
+    # if run inside vendor tcl then vlib and vmap are local commands, otherwise they are external commands 
+    if { ($::CMD_ARG_SIMVENTCL == 1) } {set extern ""} else {set extern "exec"}
+    #eval $extern vlib $dir_name/$lib_name
+    #eval $extern vmap $lib_name $dir_name/$lib_name
 
     # When using the GUI TCL shell by running avhdl.exe
     # workspace and design creation needs the full path to _run1234, otherwise it is created in the run folder
     if {[string equal $::CMD_ARG_SIMTOOL ahdl_gui]} {
         workspace create $savedDir/$dir_name
         design create -a $dir_name $savedDir
-        puts "Successfully Created $dir_name workspace and design in GUI mode.\n"        
-    } 
-    # When using a command-line vsimsa.bat shell    
-    if {[string equal $::CMD_ARG_SIMTOOL ahdl_sh]} { 
-        alib $dir_name/$name
-        set worklib $name
-        puts "Successfully Created $dir_name/$name library directory in shell mode.\n"        
+        puts "Successfully Created $dir_name workspace and design in GUI mode.\n"
+    }
+    # When using a command-line vsimsa.bat shell
+    if {[string equal $::CMD_ARG_SIMTOOL ahdl_sh]} {
+        alib $dir_name/$lib_name
+        set worklib $lib_name
+        puts "Successfully Created $dir_name/$lib_name library directory in shell mode.\n"
     }
 
     puts "Successfully Created $dir_name directory\n"
-
     return
 }
-
 
 # proc map_precompiled_lib_list {}
 # Purpose: Maps precompiled libraries in precompiled_lib_list.tcl.
 # Inputs: none.
 # Outputs: none.
 proc map_precompiled_lib_list {} {
-    puts stdout "==============utils::map_precompiled_lib_list================\n"
+    puts_debug2 "==============config_settings_activehdl::map_precompiled_lib_list TODO: fix================\n"
     source $::PRECOMPLIBLIST
     # Get library lists for each simulator and select the one required.
 
     # Got through each library and map it.
     foreach lib $PRECOMPILED_LIB_LIST {
-    #    set word_list [split $lib]
-    #    # first word is library name, second is path
-    #    vmap [lindex $word_list 0] [lindex $word_list 1]
+        set word_list [split $lib]
+        # first word is library name, second is path
+
+        # if run in questa, vlib and vmap are local, otherwise they are external commands
+        if { ($::CMD_ARG_SIMVENTCL == 1) } {set extern ""} else {set extern "exec"}
+        #$extern vmap [lindex $word_list 0] [lindex $word_list 1]
     }
 }
 
-##################### Test Case comiple ###########################
-# Compile current test-case
-set TC_COMP_INVOCATION {vlog -sv2k12 -incr -timescale $TCTIMESCALE $TCSUBDIR/$TCFILENAME.sv }
-set TC_COMP_INVOCATION_VERILOG {vlog -incr -timescale $TCTIMESCALE $TCSUBDIR/$TCFILENAME.v }
-set TC_COMP_INVOCATION_VHDL {vcom -2008 $TCSUBDIR/$TCFILENAME.vhd }
-
-##################### Variable for extra top level unit e.g. glbl ##################
-global EXTRA_UNITS
-set EXTRA_UNITS ""
-############################# Sim database Optimization #############################
-global OPTIMIZATION_ON
-global OPTIMIZATION_OFF
-global OPTIMIZATION_INVOCATION
-
-# Appended to simulation command if optimizations on or off. No vopt function in Active-HDL
-set OPTIMIZATION_ON ""
-set OPTIMIZATION_OFF ""
-
-set OPTIMIZATION_INVOCATION ""
-
-############################# Simulator options setup #############################
-global SIMULATOR_INVOCATION
-global RUN_COMMAND
-
-# Log and ASDB to result_rtl
-set SIMULATOR_INVOCATION {vsim +access +r tb -asdb \"$TCSUBDIR/result_rtl/$TCFILENAME.asdb\" -PL pmi_work -L ovi_lifmd }
-#set SIMULATOR_INVOCATION {vsim +access +r -l \"$TCSUBDIR/result_rtl/$TCFILENAME.log\" -asdb \"$TCSUBDIR/result_rtl/$TCFILENAME.asdb\" -PL pmi_work -L ovi_lifmd }
-
-set RUN_COMMAND "run -all"
-
-############################# Logging / TRANSCRIPTS #############################
-global LOGGING_INVOCATION
-
-set LOGGING_INVOCATION "log -mem -rec /*"
-
+##################### text logs ###########################
 # The _transcript file {}_ command will close the current log file. The next command will open a new log file. If it has
 # the same name as an existing file, it will replace the previous one.
 # We clear the transcript here so that the next commands will not appear in the previous log file.
 proc transcript_reset {name} {
-    puts stdout "==============config_settings_activehdl::transcript_reset================\n"
-    transcript to {}
-    transcript to $name
+    puts_debug2 "==============config_settings_activehdl::transcript_reset================\n"
+
+    # if runing in tclsh the command 'transcript' is not preset
+    if {$::CMD_ARG_SIMVENTCL == 1} {transcript to {} }
+
+    # if runing in tclsh the command 'transcript' is not preset
+    if {$::CMD_ARG_SIMVENTCL == 1} {transcript to $name }
+
     puts stdout "Transcript is closed and reopened"
 }
 
-############################# Coverage options setup #############################
-global COVERAGE_ON
-global COVERAGE_OFF
-global COVERAGE_REPORT_INVOCATION
-global COVERAGE_SAVE_INVOCATION
-global COVERAGE_PARAMS
-global COVERAGE_YES_PARAMS
-global COVERAGE_NO_PARAMS
+############################# Modelsim/Questa simu compile functions #####################
+# TODO: fis this - the Xilinx logs are generated when calling the xilinx compile script fpga.sh geenrated by vivado simulation export
+##set VSCMPL_XILINXLOG " 2>&1 | tee $::CURRENT_TCSUBDIR/result_rtl/$::CURRENT_TCFILENAME.cmpl.compile_xilinx.log; exec cat $::CURRENT_TCSUBDIR/result_rtl/$::CURRENT_TCFILENAME.cmpl.compile_xilinx.log >> $::CURRENT_TCSUBDIR/result_rtl/$::CURRENT_TCFILENAME.cmpl.log; cp -f xmvhdl.log $::CURRENT_TCSUBDIR/result_rtl/$::CURRENT_TCFILENAME.cmpl.xmvhdl.log; cp -f xmvlog.log $::CURRENT_TCSUBDIR/result_rtl/$::CURRENT_TCFILENAME.cmpl.xmvlog.log 2>/dev/null "
+set VSCMPL_XILINXLOG " "
+# TODO: fix when TC created
+# to be used with xilinx simulation exported vsim *.sh script 
+proc suxil {args} {
+    puts_debug2 "==============config_settings_activehdl::suxil $args TODO:fix =================\n"
 
-# Appended to simulation invocation command if optimizations on or off. Coverage is enabled with -cc but can't be used together with -profiler
-set COVERAGE_ON { -cc -cc_dest \"$TCSUBDIR/result_rtl/$TCFILENAME.coverage_report.rep\" }
-set COVERAGE_OFF ""
+    # add stdout redirect and rtl log concatenate to running log
+    set compile_command "$::REDIRECTSTD {*}$args [subst $::VSCMPL_XILINXLOG]"
+    puts [subst "$compile_command"]
+    #eval exec "$compile_command"
+    puts ""
+    # catch error during compile
+    catch {[eval exec "$compile_command"]} result 
+    if {$result eq "child process exited abnormally"} {
+        puts "-----------------------------------catch error--------------------------------"
+        # concatenate the log file with the error log, copy over other logs
+        eval exec "cat $::CURRENT_TCSUBDIR/result_rtl/$::CURRENT_TCFILENAME.cmpl.compile_xilinx.log >> $::CURRENT_TCSUBDIR/result_rtl/$::CURRENT_TCFILENAME.cmpl.log; cp -f xmvhdl.log $::CURRENT_TCSUBDIR/result_rtl/$::CURRENT_TCFILENAME.cmpl.xmvhdl.log; cp -f xmvlog.log $::CURRENT_TCSUBDIR/result_rtl/$::CURRENT_TCFILENAME.cmpl.xmvlog.log"      
+        puts "Xilinx script Compile ERROR !"
+        # exit compile
+        return -level 2 -code error
+    }
 
-# actually -dbg is added to the compiler invocation command
-set COVERAGE_PARAMS ""
-set COVERAGE_YES_PARAMS " -dbg "
-# Passed to vlog when not using coverage.
-set COVERAGE_NO_PARAMS ""
-
-# Called per testcase to save that simulation's coverage. The example is for toggle coverage TBD conflict with the report during simulation. TBD Not tested.
-set COVERAGE_REPORT_INVOCATION {toggle -toggle_type full -nosingle_edge -unknown_edge escape -rec -xml -o \"$TCSUBDIR/result_rtl/$TCFILENAME.coverage_report.xml\" -report all -type {/dut/*} }
-set COVERAGE_SAVE_INVOCATION {}
-
-############################# Coverage Merging and Reporting #####################################
-# Coverage merging and reporting functions for regression. Placed here for easy modification. TBD correct calls for Active-HDL not impemented.
-proc coverageMergeCmd {outFile inFile1 inFile2} {
-    puts stdout "==============config_settings_activehdl::coverageMergeCmd================\n"
-#    vcover merge -out $outFile $inFile1 $inFile2
-    return
-}
-proc coverageReportCmd {outReport inCov} {
-    puts stdout "==============config_settings_activehdl::coverageReportCmd================\n"
-#    vcover report $inCov -file $outReport
-    return
+    return;
 }
 
-############################ View Test Case ######################################
-# TBD correct call for Active-HDL not implemented yet.
+# TB/TC compile log aggreagating to single file TODO: fix
+##set VSCMPL_LOG " 2>&1 | tee compile.log; cat .tmp_simu_log >> xmvlog.log 2>/dev/null "
+set VSCMPL_LOG " 2>&1 | tee $::CURRENT_TCSUBDIR/result_rtl/$::CURRENT_TCFILENAME.cmpl.tmp_simu_log.log; exec cat $::CURRENT_TCSUBDIR/result_rtl/$::CURRENT_TCFILENAME.cmpl.tmp_simu_log.log >> $::CURRENT_TCSUBDIR/result_rtl/$::CURRENT_TCFILENAME.cmpl.log  2>/dev/null "
+
+# set vlog verilog/sv compile options
+#set VSVLOG_OPTS "$REDIRECTSTD xmvlog -work fpga -64bit -messages -logfile $::CURRENT_TCSUBDIR/result_rtl/$::CURRENT_TCFILENAME.cmpl.tmp_simu_log.log -update "
+# TODO; port UVM support from the testcase call
+set VSVLOG_OPTS "$REDIRECTSTD xvlog -incr "
+# verilog compile command
+proc suvlog {args} {
+    puts_debug2 "==============config_settings_activehdl::suvlog $args =================\n"
+
+    set compile_command "$::VSVLOG_OPTS {*}$args "
+    if {$::CMD_ARG_SIMVENTCL == 0} {
+        # Linux bash use
+        append compile_command " $::VSCMPL_LOG "}
+    # puts [subst $compile_command]
+    # puts ""
+    # if run inside questa then use local commands, otherwise execute externally 
+    if { ($::CMD_ARG_SIMVENTCL == 1) } {set extern ""} else {set extern "exec"}
+    puts [subst $compile_command]
+    puts ""
+    # catch error during compile
+    catch {[eval $extern "$compile_command"]} result 
+    if {$result eq "child process exited abnormally"} {
+        puts "-----------------------------------catch error--------------------------------"
+        # concatenate the log file with this error log
+        eval exec cat $::CURRENT_TCSUBDIR/result_rtl/$::CURRENT_TCFILENAME.cmpl.tmp_simu_log.log >> $::CURRENT_TCSUBDIR/result_rtl/$::CURRENT_TCFILENAME.cmpl.log       
+        puts "suvlog Compile ERROR !"
+        # exit compile
+        return -level 2 -code error
+    }
+
+    return;
+}
+
+# set vcom vhdl compile options
+#set VSVHDL_OPTS "$REDIRECTSTD xmvhdl -work fpga -64bit -messages -relax -logfile $::CURRENT_TCSUBDIR/result_rtl/$::CURRENT_TCFILENAME.cmpl.tmp_simu_log.log -update "
+set VSVHDL_OPTS "$REDIRECTSTD vcom -incr -2008 "
+# vhdl compile command
+proc suvhdl {args} {
+    puts_debug2 "==============config_settings_activehdl::suvhdl $args =================\n"
+
+    set compile_command "$::VSVHDL_OPTS {*}$args "
+    if {$::CMD_ARG_SIMVENTCL == 0} {
+        # Linux bash use
+        append compile_command " $::VSCMPL_LOG "}    
+    # puts [subst $compile_command]
+    # puts ""
+    # catch error during compile
+    # if run inside questa then use local commands, otherwise execute externally 
+    if { ($::CMD_ARG_SIMVENTCL == 1) } {set extern ""} else {set extern "exec"} 
+    puts [subst $compile_command]
+    puts ""   
+    catch {[eval $extern "$compile_command"]} result 
+    if {$result eq "child process exited abnormally"} {
+        puts "-----------------------------------catch error--------------------------------"
+        # concatenate the log file with this error log
+        eval exec cat $::CURRENT_TCSUBDIR/result_rtl/$::CURRENT_TCFILENAME.cmpl.tmp_simu_log.log >> $::CURRENT_TCSUBDIR/result_rtl/$::CURRENT_TCFILENAME.cmpl.log       
+        puts "suvhdl Compile ERROR !"
+        # exit compile
+        return -level 2 -code error
+    }
+
+    return;
+}
+
+############################# Elaboration #####################
+#set ::XSIM_INITFILE ""
+#set ::XSIM_INITFILE "-initfile=xsim_ip.ini"
+# -s key is for snapshot result of the elaboration
+#set ::XELAB_INVOCATION "$REDIRECTSTD xelab  -s work.tb_elab $::TIMESCALEELAB_OPT $::TCTIMESCALEELAB -L UNISIMS_VER -L XILINXCORELIB_VER work.tb -debug all -log $CURRENT_TCSUBDIR/result_rtl/$CURRENT_TCFILENAME.elab.log "
+
+# Without this, script execution halts during a regression
+proc preSimCommand {} {
+    puts_debug2 "==============config_settings_activehdl::preSimCommand================\n"
+
+    if {$::CMD_ARG_SIMVENTCL == 1} { onerror {resume} } 
+
+    return;
+}
+
+############################# Sim database Optimization #############################
+# no vopt function in Active HDL
+# Appended to simulation command if optimizations on or off
+set OPTIMIZATION_ON ""
+set OPTIMIZATION_OFF ""
+
+# set elaboration options
+#set VSELAB_OPTS "$REDIRECTSTD vopt +acc "
+set VSELAB_OPTS ""
+#set VSELAB_LIBS " -L xil_defaultlib -L gtwizard_ultrascale_v1_7_16"
+set VSELAB_LIBS ""
+#set OPTIMIZATION_INVOCATION "vopt +acc tb -o tb_opt"
+#set OPTIMIZATION_INVOCATION "$::VSELAB_OPTS $::VSELAB_LIBS  tb -o tb_opt "
+set OPTIMIZATION_INVOCATION ""
+
+# Variable for list of libraries, e.g. unisim 
+# no optimization avalaible in Active HDL
+set EXTRA_LIBS ""
+proc optimizeCommand {tcSubDir tcFileName tcTimeScale} {
+    puts_debug2 "==============config_settings_activehdl::optimizeCommand================\n"
+    set optcmd $::OPTIMIZATION_INVOCATION
+    foreach lib $::EXTRA_LIBS {
+        append optcmd " -L $lib"
+    }
+    foreach unit $::EXTRA_UNITS {
+        append optcmd " $unit"
+    }
+
+    puts stdout [subst $optcmd]
+    puts ""   
+    # if run inside questa then use local commands, otherwise execute externally 
+    if { ($::CMD_ARG_SIMVENTCL == 1) } {set extern ""} else {set extern "exec"}    
+    eval $extern $optcmd
+
+}
+
+############################# Simulator options setup #############################
+# Variable for extra top level unit e.g. glbl 
+# global EXTRA_UNITS
+set EXTRA_UNITS ""
+
+# set xmsim simulation options
+set VSSIM_OPTS "$REDIRECTSTD vsim  -permit_unmatched_virtual_intf +access +r tb -PL pmi_work -L ovi_lifmd "
+# Log and WLF to result_rtl
+# TODO: fix sim command for Active HDL
+#set ::SIMULATOR_INVOCATION {vsim  -permit_unmatched_virtual_intf  -l "$tcSubDir/result_rtl/$tcFileName.log" -wlf "$tcSubDir/result_rtl/$tcFileName.wlf "}
+set SIMULATOR_INVOCATION  "$VSSIM_OPTS  -l $CURRENT_TCSUBDIR/result_rtl/$CURRENT_TCFILENAME.log -do vsim_wavelog_coverage.tcl "
+#set SIMULATOR_INVOCATION  "$VSSIM_OPTS  -l $CURRENT_TCSUBDIR/result_rtl/$CURRENT_TCFILENAME.log  -wlf $CURRENT_TCSUBDIR/result_rtl/$CURRENT_TCFILENAME.wlf "
+
+# simulation run command is empty becuse the "run" parameters now in the TCL file called from the simulaton call function simCommand
+set SIM_RUN_COMMAND ""
+
+proc simCommand {} {
+    puts_debug2 "==============config_settings_activehdl::simCommand================\n"
+    set simcmd $::SIMULATOR_INVOCATION
+
+    # not GUI mode to look at waveform == CLI mode
+    #if {$::CMD_ARG_VIEW != 2} {
+    #    append simcmd " -c " }
+
+    # waveform logging
+    if {$::CMD_ARG_WAVELOGGING > 0} {
+        append simcmd " -asdb $::CURRENT_TCSUBDIR/result_rtl/$::CURRENT_TCFILENAME.asdb "   } 
+
+    # optimize options
+    if {$::CMD_ARG_OPTIMIZE > 0} {append simcmd " $::OPTIMIZATION_ON "
+    } else                       {append simcmd " $::OPTIMIZATION_OFF $::EXTRA_UNITS "}
+
+    # coverage options
+    if {$::CMD_ARG_COVERAGE > 0} {append simcmd " $::COVERAGE_ON "
+    } else                       {append simcmd " $::COVERAGE_OFF "}
+
+    foreach lib $::EXTRA_LIBS {
+        append simcmd " -L $lib"
+    }
+
+    # if run inside questa then use local commands, otherwise execute externally 
+    if { ($::CMD_ARG_SIMVENTCL == 1) } {set extern ""} else {set extern "exec"}
+    puts stdout [subst $simcmd]
+    puts ""       
+    eval $extern $simcmd    
+}
+
+proc generateSimTclFile {} {
+    puts_debug2 "==============config_settings_activehdl::generateSimTclFile================\n"
+
+    # rpint to .tcl file
+    proc putf {fp command} {
+        puts $fp $command
+    }
+    set fp [open vsim_wavelog_coverage.tcl w]
+
+    puts     "Wave log .tcl prep"
+
+    # add wave logging parameters
+    if {$::CMD_ARG_WAVELOGGING > 0} {            
+        puts     "Wave log creation for vsim for all signals .tcl prep"
+        putf $fp "#wave log creation for vsim for all signals"
+        putf $fp "log -mem -rec /* "
+    } 
+
+    # run simulation
+    puts     "Run simulation until end .tcl prep"
+    putf $fp "#run simulation until end"
+    putf $fp "run -all"
+
+    # Coverage reports saving 
+    if {$::CMD_ARG_COVERAGE > 0} {
+        puts stdout "Coverage report invocation .tcl prep"
+        putf $fp    "#Coverage report invocation .tcl prep"
+        puts stdout [subst $::COVERAGE_REPORT_INVOCATION]
+        putf $fp [subst $::COVERAGE_REPORT_INVOCATION]
+        puts stdout "\n"
+        puts stdout "Coverage database save invocation .tcl prep"  
+        putf $fp    "#Coverage database save invocation .tcl prep"  
+        puts stdout [subst $::COVERAGE_SAVE_INVOCATION]
+        putf $fp [subst $::COVERAGE_SAVE_INVOCATION]
+        puts stdout "\n"
+        puts stdout "Coverage .tcl prep complete\n"
+    } else {
+        puts stdout "No coverage selected.\n"
+    }
+
+    # exit simulation if not in GUI mode with simulator license use
+    if {$::CMD_ARG_VIEW != 2} {
+        puts     "Exit simulation .tcl prep"        
+        putf $fp "#exit simulation"
+        putf $fp "endsim"
+    } 
+
+    # exit simulation if running in not simulator vendor tcl
+    if {$::CMD_ARG_SIMVENTCL == 0 && $::CMD_ARG_VIEW != 2} {
+        puts     "Exit simulation .tcl prep"        
+        putf $fp "#exit simulation"
+        putf $fp "exit"
+    }     
+
+    close $fp
+
+}
+
+# Quit simulation without closing entire program 
+global SIMULATOR_QUIT
+# if running in terminal TCL interpreter then 'quit' command doesn't exist, 'quit' is only vsim TCL command
+set SIMULATOR_QUIT "if {$::CMD_ARG_SIMVENTCL == 1} {
+    puts stdout \"Quiting simulator ...\"
+    endsim
+    }"
+
+############################ View Test Case Waveforms in GUI ######################################
 proc view_wave_log {view_wave wave_do tcSubDir tcFileName} {
-    puts stdout "==============config_settings_activehdl::view_wave_log================\n"
+    puts_debug2 "==============config_settings_activehdl::view_wave_log================\n"
     global REGRESSION
 
     if { ![info exists REGRESSION]} {
@@ -200,73 +436,48 @@ proc view_wave_log {view_wave wave_do tcSubDir tcFileName} {
 
     # If not in regression, either exit, or reopen in viewer mode
     if [string equal -nocase $REGRESSION no] {
-#        eval $::SIMULATOR_QUIT
+        eval $::SIMULATOR_QUIT
         if {$view_wave == 1} {
-            vsim -view $tcSubDir/result_rtl/$tcFileName.wlf
+            vsim -view $::CURRENT_TCSUBDIR/result_rtl/$::CURRENT_TCFILENAME.wlf
 
             # Waveform viewer
             if [file exists $wave_do] {
                 do $wave_do
             }
         } else {
-            puts stdout "Not opening waveform in simulator.\n"            
-        }
+
+            puts stdout "Not opening waveform in simulator.\n"
+       }
     }
 }
 
-############################### Quit simulation without closing entire program #########################
-global SIMULATOR_QUIT
-#set SIMULATOR_QUIT "quit -sim"
-set SIMULATOR_QUIT "endsim"
+############################# Coverage options setup #############################
+# used by vlog vcom compile commands when optimization is on or off
+set COVERAGE_PARAMS ""
+set COVERAGE_YES_PARAMS " -dbg "
+set COVERAGE_NO_PARAMS " "
+set COVERAGE_PARAMS $COVERAGE_YES_PARAMS
+if {$::CMD_ARG_COVERAGE == 0} {set COVERAGE_PARAMS $COVERAGE_NO_PARAMS}
 
-############################# Modelsim, Don't Hang During Regression Hack #####################
-# Without this, script execution halts during a regression. TBD if needed in Active-HDL
-proc preSimCommand {tcFileName tcTimeScale} {
-    puts stdout "==============config_settings_activehdl::preSimCommand================\n"
-    onerror {resume}
-    return;
+# used by simulation command if optimizations in on or off
+set COVERAGE_ON " -cc -cc_dest $CURRENT_TCSUBDIR/result_rtl/$CURRENT_TCFILENAME.coverage_report.rep "
+set COVERAGE_OFF ""
+
+# Postprocessing called per testcase to save that simulation's coverage report and database
+#set COVERAGE_REPORT_INVOCATION {coverage report -file "$CURRENT_TCSUBDIR/result_rtl/$CURRENT_TCFILENAME.coverage_report.rep"}
+set COVERAGE_REPORT_INVOCATION "toggle -toggle_type full -nosingle_edge -unknown_edge escape -rec -xml -o $CURRENT_TCSUBDIR/result_rtl/$CURRENT_TCFILENAME.coverage_report.xml -report all -type {/dut/*} "
+#set COVERAGE_SAVE_INVOCATION "coverage save $CURRENT_TCSUBDIR/result_rtl/$CURRENT_TCFILENAME.cov" 
+set COVERAGE_SAVE_INVOCATION "" 
+
+# Coverage merging and reporting functions for regression. Placed here for easy modification.
+proc coverageMergeCmd {outFile inFile1 inFile2} {
+    puts_debug2 "==============config_settings_activehdl::coverageMergeCmd================\n"
+    #vcover merge -out $outFile $inFile1 $inFile2
+    return
+}
+proc coverageReportCmd {outReport inCov} {
+    puts_debug2 "==============config_settings_activehdl::coverageReportCmd================\n"
+    #vcover report $inCov -file $outReport
+    return
 }
 
-##################### Ignored testcases setup - Black-listed testcases ##################
-# proc getRegressionTCIgnoreList
-# Purpose: Returns a list of all testcases (tc_example.tcl) which should NOT be 
-#          included in the regression. To add TCs to this ignore list,
-#          append the name of the testcases tcl script using the TCL lappend command.
-# Inputs :
-#       testcasesDir: Points to the local testcases directory.
-# Outputs: regressionTCIgnoreList
-proc getRegressionTCIgnoreList {testcasesDir} {
-    puts stdout "==============config_settings_general::getRegressionTCIgnoreList================\n"
-    set regressionTCIgnoreList ""
-
-    # To add directories to this ignore list, simply append the name of the directory
-    # using the TCL lappend command as shown in the next line.
-#    lappend regressionTCIgnoreList $::TESTCASESDIR_XILINX/tc_xilinx_vivado/tc_xilinx_vivado_vsim.tcl
-#    lappend regressionTCIgnoreList $::TESTCASESDIR_XILINX/tc_xilinx_vivado/tc_xilinx_vivado_xsim.tcl
-#    lappend regressionTCIgnoreList $::TESTCASESDIR_XILINX/tc_xilinx_axi/tc_xilinx_axi.tcl
-#    lappend regressionTCIgnoreList $::TESTCASESDIR_XILINX/tc_xilinx_axis/tc_xilinx_axis.tcl
-#    lappend regressionTCIgnoreList $::TESTCASESDIR_XILINX/tc_xilinx_axilite/tc_xilinx_axilite.tcl
-#    lappend regressionTCIgnoreList $::TESTCASESDIR_INTEL/tc_intel_quartus/tc_intel_quartus_mm_read_write.tcl
-    lappend regressionTCIgnoreList $::TESTCASESDIR1/tc_fidus_axis_video/tc_fidus_axis_video.tcl
-
-    return $regressionTCIgnoreList
-}
-
-############################## External Testcase Directory List ##########################
-# proc getExternalTestcaseDirs
-# Purpose: Returns a list of paths to external testcase directories, containing several modules folders inside
-#          These are used in regression.
-#          Paths can be relative to dev/sim/run, or absolute.
-proc getExternalTestcaseDirs {} {
-    puts stdout "==============config_settings_general::getExternalTestcaseDirs================\n"    
-    set testcaseDirList ""
-
-    # Local testcases
-    lappend testcaseDirList $::TESTCASESDIR1
-#    lappend testcaseDirList $::TESTCASESDIR2
-#    lappend testcaseDirList $::TESTCASESDIR3
-#    lappend testcaseDirList $::TESTCASESDIR_XILINX
-#    lappend testcaseDirList $::TESTCASESDIR_INTEL
-#    lappend testcaseDirList $::TESTCASESDIR_ALDEC
-
-}

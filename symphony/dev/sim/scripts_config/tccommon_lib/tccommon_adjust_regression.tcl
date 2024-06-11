@@ -1,6 +1,8 @@
 # ---------------------------------------------------------------------------//
 #
-# Copyright (C) 2018 Fidus Systems Inc.
+# Copyright (C) 2006-2023 Fidus Systems Inc. 
+# SPDX-License-Identifier: Apache-2.0 OR MIT
+# The licenses stated above take precedence over any other contracts, agreements, etc.
 #
 # Project       : simu
 # Author        : Dessislav Valkov
@@ -12,7 +14,7 @@
 # Updated       : date / author - comments
 #-----------------------------------------------------------------------------//
 
-puts stdout "==============tccommon_adjust_regression.tcl================"
+puts_debug1 "==============tccommon_adjust_regression.tcl================"
 
 puts stdout "Checking if regression is set or not."
 

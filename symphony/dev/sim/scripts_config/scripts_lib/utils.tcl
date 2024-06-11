@@ -1,6 +1,8 @@
 # -----------------------------------------------------------------------//
 #
-# Copyright (C) 2018 Fidus Systems Inc.
+# Copyright (C) 2006-2023 Fidus Systems Inc. 
+# SPDX-License-Identifier: Apache-2.0 OR MIT
+# The licenses stated above take precedence over any other contracts, agreements, etc.
 #
 # Project       : simu
 # Author        : Victor Dumitriu
@@ -24,7 +26,7 @@
 # DO NOT EDIT
 # ----------------------------------------------------------------------//
 
-puts stdout "==============utils.tcl================\n"
+puts_debug1 "==============utils.tcl================\n"
 
 global fname_utils
 set fname_utils "---->utils.tcl: "
@@ -215,7 +217,7 @@ proc add_lib_arg {lib_list lib} {
 # Outputs: A combined coverage file and coverage report are created in the coverage data
 #          sub-directory.
 proc combCov {tc_list covDatSubdir covCombName} {
-    puts stdout "==============utils::combCov================\n"
+    puts_debug2 "==============utils::combCov================\n"
     set next_index -1
     for {set i 0} {$i < [llength $tc_list]} {incr i} {
         #Loop until first valid coverage file
@@ -259,7 +261,7 @@ proc combCov {tc_list covDatSubdir covCombName} {
 # Outputs: A combined coverage data file and report are created in the root tb/
 #          directory.
 proc combCovAll {modList covCombName} {
-    puts stdout "==============utils::combCovAll================\n"
+    puts_debug2 "==============utils::combCovAll================\n"
     set next_index -1
     for {set i 0} {$i < [llength $modList]} {incr i} {
         #Loop until first valid coverage file
@@ -314,7 +316,7 @@ proc combCovAll {modList covCombName} {
 #        noCompleteIndex          --> stats array index where we should add the name of test cases which did not complete
 # Outputs: none.
 proc parseLogFile {logFileNameAndPath regressionStatsArrayName passIndex failIndex warningsIndex noCompleteIndex} {
-    puts stdout "==============utils::parseLogFile================\n"
+    puts_debug2 "==============utils::parseLogFile================\n"
     upvar 1 $regressionStatsArrayName statsArray
 
     if [catch {open $logFileNameAndPath r} fileId] {
@@ -374,7 +376,7 @@ proc parseLogFile {logFileNameAndPath regressionStatsArrayName passIndex failInd
 #        failIndex                  --> stats array index where we should add the name of failing test cases.
 # Outputs: none.
 proc parseRegLog {logFileNameAndPath regressionStatsArrayName passIndex failIndex} {
-    puts stdout "==============utils::parseRegLog================\n"
+    puts_debug2 "==============utils::parseRegLog================\n"
     upvar 1 $regressionStatsArrayName statsArray
 
     if [catch {open $logFileNameAndPath r} fileId] {
@@ -418,7 +420,7 @@ proc parseRegLog {logFileNameAndPath regressionStatsArrayName passIndex failInde
 #        tdDir                      --> Directory being summed up
 # Outputs: none.
 proc sumUpResults {channel regressionStatsArrayName tcDir} {
-    puts stdout "==============utils::sumUpResults================\n"
+    puts_debug2 "==============utils::sumUpResults================\n"
     upvar 1 $regressionStatsArrayName regressionStatsArray
 
     set nbOfPasses    [expr [llength $regressionStatsArray(passListModuleLevel)]]
@@ -466,7 +468,7 @@ proc sumUpResults {channel regressionStatsArrayName tcDir} {
 #                                       fail, no complete lists.
 # Outputs: none.
 proc sumUpResultsAll {channel regressionStatsArrayName} {
-    puts stdout "==============utils::sumUpResultsAll================\n"
+    puts_debug2 "==============utils::sumUpResultsAll================\n"
     upvar 1 $regressionStatsArrayName regressionStatsArray
 
     set nbOfPasses    [expr [llength $regressionStatsArray(passListModuleLevel)]]
@@ -560,7 +562,7 @@ proc sumUpResultsAll {channel regressionStatsArrayName} {
 #
 # Outputs: appends a list of one or more module names to the mod list specified by modListName.
 proc setModList {modListName singleMod singleModName moduleDir} {
-    puts stdout "==============utils::setModList================\n"
+    puts_debug2 "==============utils::setModList================\n"
     upvar 1 $modListName modList
 
     if {$singleMod > 0} {
@@ -595,7 +597,7 @@ proc setModList {modListName singleMod singleModName moduleDir} {
 #
 # Outputs: Creates a superlist in file according to SUPERLISTNAME
 proc createSuperList {singleMod singleModName noDelete} {
-    puts stdout "==============utils::createSuperList================\n"
+    puts_debug2 "==============utils::createSuperList================\n"
     set fp_lock [acquireSuperlistLock]
     # Locked access begins
 
@@ -604,7 +606,6 @@ proc createSuperList {singleMod singleModName noDelete} {
 
     puts stdout "Generating superlist in regression_results:"
 
-    set tcIgnoreList [getRegressionTCIgnoreList $::TESTCASESDIR1]
 
     set extraTestcaseDirs [getExternalTestcaseDirs]
     # Add extra testcase directories if specified
@@ -619,6 +620,7 @@ proc createSuperList {singleMod singleModName noDelete} {
         if {[catch {listDir "$tcDir/tc*.tcl"} result]} {
             # No testcases in that directory.
         } else {
+            set tcIgnoreList [getRegressionTCIgnoreList $tcDir]
             foreach tCase $result {
                 # Adds full relative path
                 if {[lsearch $tcIgnoreList $tCase] < 0} {
@@ -662,7 +664,7 @@ proc createSuperList {singleMod singleModName noDelete} {
 #
 # Outputs: Creates a superlist lockfile when it becomes available.
 proc acquireSuperlistLock {} {
-    puts stdout "==============utils::acquireSuperlistLock================\n"
+    puts_debug2 "==============utils::acquireSuperlistLock================\n"
     if {![file isdirectory [file dirname $::SUPERLISTLOCK]]} {
         file mkdir [file dirname $::SUPERLISTLOCK]
     }
@@ -677,7 +679,7 @@ proc acquireSuperlistLock {} {
 # proc releaseSuperlistLock {}
 # Purpose: Releases lock file by deleting it.
 proc releaseSuperlistLock {fp_lock} {
-    puts stdout "==============utils::releaseSuperlistLock================\n"
+    puts_debug2 "==============utils::releaseSuperlistLock================\n"
     close $fp_lock
     file delete -force $::SUPERLISTLOCK
 }
@@ -691,7 +693,7 @@ proc releaseSuperlistLock {fp_lock} {
 #   last:           set to 1 if this is the last testcase (for merging),
 #                   set to 0 otherwise
 proc getAvailableTestcase {last} {
-    puts stdout "==============utils::getAvailableTestcase================\n"
+    puts_debug2 "==============utils::getAvailableTestcase================\n"
     upvar 1 $last _last
 
     set fp_lock [acquireSuperlistLock]
@@ -752,7 +754,7 @@ proc getAvailableTestcase {last} {
 #       warning: 0 for none, 1 for warnings
 #       tcPath: path of testcase
 proc superlistPassFail {pass warning tcPath} {
-    puts stdout "==============utils::superlistPassFail================\n"
+    puts_debug2 "==============utils::superlistPassFail================\n"
     set fp_lock [acquireSuperlistLock]
     # Locked access begins
 
@@ -809,7 +811,7 @@ proc superlistPassFail {pass warning tcPath} {
 # Purpose: Polls the superlist unil all testcases have been completed, then returns.
 #
 proc superlistWaitOnCompletion {} {
-    puts stdout "==============utils::superlistWaitOnCompletion================\n"
+    puts_debug2 "==============utils::superlistWaitOnCompletion================\n"
     while {1} {
         set fp_lock [acquireSuperlistLock]
         # Locked access begins
@@ -847,7 +849,7 @@ proc superlistWaitOnCompletion {} {
 #               and show stats
 #          0: otherwise
 proc runRegression {} {
-    puts stdout "==============utils::runRegression================\n"
+    puts_debug2 "==============utils::runRegression================\n"
     # Set when last testcase is taken to indicate coverage merging and final reporting
     # needs to take place.
     set is_last 0
@@ -860,10 +862,10 @@ proc runRegression {} {
     set prev_modSubDir ""
     while {1} {
         set tcPath [getAvailableTestcase is_last]
-        puts stdout "Executing TC  $tcPath"                    
+        puts stdout "Executing TC  $tcPath"
         if {$tcPath eq "NONE"} {
             # No testcases left to execute.
-            puts stdout "No test cases left to execute!!!. You might need to delete the Regression TC list file to start a fresh regression. \n"            
+            puts stdout "No test cases left to execute!!!. You might need to delete the Regression TC list file to start a fresh regression. \n"
             break
         }
         # Set local parameters.
@@ -930,7 +932,7 @@ proc runRegression {} {
 #        resultsLogPath --> Path to the results file to save to.
 # Outputs: none.
 proc parseResAll {modList resultsLogPath} {
-    puts stdout "==============utils::parseResAll================\n"
+    puts_debug2 "==============utils::parseResAll================\n"
     # Parse logs, report recursion PASS/FAIL status.
     # Prepare regression results log file for writing.
     set parseId 0

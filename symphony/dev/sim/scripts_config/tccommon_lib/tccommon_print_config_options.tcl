@@ -1,6 +1,8 @@
 # -----------------------------------------------------------------------//
 #
-# Copyright (C) 2018 Fidus Systems Inc.
+# Copyright (C) 2006-2023 Fidus Systems Inc. 
+# SPDX-License-Identifier: Apache-2.0 OR MIT
+# The licenses stated above take precedence over any other contracts, agreements, etc.
 #
 # Project       : simu
 # Author        : Dessislav Valkov
@@ -12,11 +14,11 @@
 # Updated       : date / author - comments
 # ----------------------------------------------------------------------//
 
-puts stdout "==============tccommon_print_config_options.tcl================"
+puts_debug1 "==============tccommon_print_config_options.tcl================"
 
 # Print configured options.
-if {$::CMD_ARG_LOGGING > 0} {puts stdout "Logging turned ON."
-} else {puts stdout "Logging turned OFF."} 
+if {$::CMD_ARG_WAVELOGGING > 0} {puts stdout "Logging turned ON."
+} else {puts stdout "Wave-logging turned OFF."} 
 
 if {$::CMD_ARG_OPTIMIZE > 0} {puts stdout "Optimization turned ON."
 } else {puts stdout "Optimization turned OFF."}
@@ -27,8 +29,11 @@ if {$::CMD_ARG_COVERAGE > 0} {puts stdout "Coverage turned ON."
 if {$::CMD_ARG_COMPILE > 0} {puts stdout "Compilation turned ON."
 } else {puts stdout "Compilation turned OFF."}
 
-if {$::CMD_ARG_VIEW > 0} {puts stdout "Simulation will be RE-OPPENED in viewer mode after running."
-} else {puts stdout "Simulation will NOT be RE-OPENED in viewer mode after running."}
+if {$::CMD_ARG_VIEW > 0} {puts stdout "Simulation will be RE-OPPENED in GUI mode after running."
+} else {puts stdout "Simulation will NOT be RE-OPENED in GUI mode after running."}
+
+if {$::CMD_ARG_UVM > 0} {puts stdout "Simulation will use UVM files in the testcase."
+}
 
 # INITSEED is either randomly set, or set to CMD_ARG_SEED if it is non-empty.
 puts stdout "Seed is set to $INITSEED."

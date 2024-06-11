@@ -1,6 +1,8 @@
 #-----------------------------------------------------------------------------//
 #
-# Copyright (C) 2018 Fidus Systems Inc.
+# Copyright (C) 2006-2023 Fidus Systems Inc. 
+# SPDX-License-Identifier: Apache-2.0 OR MIT
+# The licenses stated above take precedence over any other contracts, agreements, etc.
 #
 # Project       : simu
 # Author        : Jacob von Chorus
@@ -59,6 +61,11 @@ set ACTIVEHDL_PRECOMPILED_LIB_LIST ""
 
 # ===========================================================================================================
 
+set XM_PRECOMPILED_LIB_LIST ""
+# Append libraries here:
+
+# ===========================================================================================================
+
 # Set general list based on chosen simulator.
 # DO NOT EDIT BELOW
 if {$::DEFAULT_SIMULATOR eq "vsim"} {
@@ -67,3 +74,5 @@ if {$::DEFAULT_SIMULATOR eq "xsim"} {
     set PRECOMPILED_LIB_LIST $XSIM_PRECOMPILED_LIB_LIST}
 if {$::DEFAULT_SIMULATOR eq "ahdl_gui" || $::DEFAULT_SIMULATOR eq "ahdl_sh"} {
     set PRECOMPILED_LIB_LIST $ACTIVEHDL_PRECOMPILED_LIB_LIST}
+if {$::DEFAULT_SIMULATOR eq "xm"} {
+    set PRECOMPILED_LIB_LIST $XSIM_PRECOMPILED_LIB_LIST}

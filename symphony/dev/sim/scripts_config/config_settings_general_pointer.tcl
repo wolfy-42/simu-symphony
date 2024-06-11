@@ -1,6 +1,8 @@
 #-----------------------------------------------------------------------------//
 #
-# Copyright (C) 2018 Fidus Systems Inc.
+# Copyright (C) 2006-2023 Fidus Systems Inc. 
+# SPDX-License-Identifier: Apache-2.0 OR MIT
+# The licenses stated above take precedence over any other contracts, agreements, etc.
 #
 # Project       : simu
 # Author        : Dessislav Valkov
@@ -17,10 +19,6 @@
 # --------------------------------------------------------------------//
 
 puts stdout "==============config_settings_general_pointer.tcl================\n"
-
-
-# overwrite the simulator for all scripts, except when set in simu shell it will be overwritten
-set ::DEFAULT_SIMULATOR activehdl
 
 # can be changed here and it will affect all scripts
 source ../scripts_config/config_settings_general.tcl

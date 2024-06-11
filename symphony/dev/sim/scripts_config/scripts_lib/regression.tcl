@@ -1,6 +1,8 @@
 # -----------------------------------------------------------------------//
 #
-# Copyright (C) 2018 Fidus Systems Inc.
+# Copyright (C) 2006-2023 Fidus Systems Inc. 
+# SPDX-License-Identifier: Apache-2.0 OR MIT
+# The licenses stated above take precedence over any other contracts, agreements, etc.
 #
 # Project       : simu
 # Author        : Victor Dumitriu
@@ -42,7 +44,7 @@ while {1} {
 cd ..
 file copy -- run $runDirName
 cd $runDirName
-puts stdout "cd to $runDirName\n" 
+puts stdout "cd to $runDirName\n"
 
 puts stdout "==============regression.tcl > Print Config Options==============\n"
 if {$::CMD_ARG_MODNAME eq ""} {
@@ -56,7 +58,7 @@ if {$::CMD_ARG_MODNAME eq ""} {
 if {$argArray(singleMod) == 1} {
     puts stdout "Single module selected: $argArray(modName).\n"
 } else {
-    puts stdout "All modules are selected for regression.\n"    
+    puts stdout "All modules are selected for regression.\n"
 }
 
 # If not in report mode, create a superlist if necessary and run regression.
@@ -65,7 +67,7 @@ if {$::CMD_ARG_REPORT == 0} {
     # Create superlist of testcases if it does not already exist.
     if {[file exists $SUPERLISTNAME] == 0} {
         # The 0 requests result_rtl directories to be cleaned.
-        puts stdout "==============regression.tcl > Create Regressions TC List to Run==============\n"        
+        puts stdout "==============regression.tcl > Create Regressions TC List to Run==============\n"
         createSuperList $argArray(singleMod) $argArray(modName) 0
     }
 
@@ -73,7 +75,7 @@ if {$::CMD_ARG_REPORT == 0} {
     # Run regression testing on test-case list.
     set is_last [runRegression]
 } else {
-    puts stdout "==============regression.tcl > Generate Reports by Parsing Regression Results==============\n"   
+    puts stdout "==============regression.tcl > Generate Reports by Parsing Regression Results==============\n"
     # Recreate regression results report
     # Define so there isn't an error later.
     set is_last 0
@@ -86,10 +88,10 @@ if {$::CMD_ARG_REPORT == 0} {
         # The sum up results function then uses this list to generate the results report.
         while {1} {
             set tcPath [getAvailableTestcase ignore]
-            puts stdout "Parsing TC  $tcPath \n"                       
+            puts stdout "Parsing TC  $tcPath \n"
             if {$tcPath eq "NONE"} {
-                # No testcases left 
-                puts stdout "No test cases left to parse. \n"            
+                # No testcases left
+                puts stdout "No test cases left to parse. \n"
                 break
             }
             # Get results -> Update superlist with pass/fail
@@ -102,7 +104,7 @@ if {$::CMD_ARG_REPORT == 0} {
             set regressionStatsArray(noCompleteListModuleLevel) ""
             set regressionStatsArray(warningsListModuleLevel)   ""
             # Analyze log files, update superlist..
-            set logName $modSubDir/result_rtl/$current_tc.log    
+            set logName $modSubDir/result_rtl/$current_tc.log
             parseLogFile $logName regressionStatsArray passListModuleLevel failListModuleLevel \
                 warningsListModuleLevel noCompleteListModuleLevel
             if {[llength $regressionStatsArray(warningsListModuleLevel)] > 0} {
@@ -151,7 +153,7 @@ if {$is_last == 1 || $::CMD_ARG_REPORT == 1} {
     foreach modDir $modDirList {
         set simResSubdir $modDir/result_rtl
         set tc_list_local ""
-        set tcIgnoreList [getRegressionTCIgnoreList $::TESTCASESDIR1]
+        set tcIgnoreList [getRegressionTCIgnoreList $modDir]
 
         # Build a list of testcase names.
         if {[catch {listDir "$modDir/tc*.tcl"} result]} {
@@ -197,7 +199,7 @@ if {$is_last == 1 || $::CMD_ARG_REPORT == 1} {
 
         # Analyze all log files.
         foreach item $tc_list_local {
-            set logName $simResSubdir/$item.log    
+            set logName $simResSubdir/$item.log
             parseLogFile $logName regressionStatsArray passListModuleLevel failListModuleLevel warningsListModuleLevel noCompleteListModuleLevel
         }
 

@@ -1,7 +1,9 @@
 #!/usr/bin/env tclsh
 # -----------------------------------------------------------------------//
 #
-# Copyright (C) 2018 Fidus Systems Inc.
+# Copyright (C) 2006-2023 Fidus Systems Inc. 
+# SPDX-License-Identifier: Apache-2.0 OR MIT
+# The licenses stated above take precedence over any other contracts, agreements, etc.
 #
 # Project       : simu
 # Author        : Jacob von Chorus
@@ -37,7 +39,7 @@
 #   - renamed the testcases folders to reflect the simulation options
 #   - added Active-HDL simulator support, but not part of the automated Jenkins regressions
 #   - added a simulator selecting parameter to the command line options   
-# 
+#
 # ----------------------------------------------------------------------//
 
 puts stdout "==============simu.tcl================.\n"
@@ -101,6 +103,9 @@ proc select_simulator {sim} {
     } elseif {[string equal -nocase $sim "ahdl_sh"] == 1} {
         set SELECTED_SIMULATOR ahdl_sh
         puts stdout "Selected: $sim"        
+    } elseif {[string equal -nocase $sim "xm"] == 1} {
+        set SELECTED_SIMULATOR xm
+        puts stdout "Selected: $sim"            
     } else {
         puts stdout "Invalid simulator: $sim"
     }
@@ -145,6 +150,7 @@ proc select_simulator {sim} {
 proc run_testcase {testcase args} {
     puts stdout "==============simu::run_testcase==============\n"
 
+    # check if file exists
     set validForm [regexp {tc.*\/tc.*\.tcl$} $testcase]
     set exists [file exists $testcase]
 
@@ -156,7 +162,8 @@ proc run_testcase {testcase args} {
     _set_sim_args $args
 
     # "set" commands to pass to simulator
-    set variable_list_vsim  "set IN_SIMU_ENVIRONMENT 0;set DEFAULT_SIMULATOR $::DEFAULT_SIMULATOR"
+    set variable_list_vsim  "set IN_SIMU_ENVIRONMENT 0" 
+    #;set DEFAULT_SIMULATOR $::DEFAULT_SIMULATOR"
 
     # If already in a simulation environment, use "source",
     # otherwise a selected simulation environment has to be brought up.
@@ -188,6 +195,17 @@ proc run_testcase {testcase args} {
                 exec >&@stdout vivado -notrace -mode batch -source $testcase -tclargs IN_SIMU_ENVIRONMENT $::DEFAULT_SIMULATOR
             }
         }
+    } elseif {$::DEFAULT_SIMULATOR eq "xm"} {
+        if {[regexp {\-view} $args] } {
+            # open GUI in simvision - not functional when using -view ,use only the config file
+            #exec >&@stdout simvision -input pu.tcl;source $testcase
+            #exec >&@stdout simvision -input "source runme_simu_shell.tcl;source $testcase"
+            exec >&@stdout simvision -input "source $testcase"
+        } else {
+            # use CLI in TCL interpreter only
+            source $testcase
+            #exec >&@stdout xmsim -tcl tb -input source $testcase
+        }          
     } else {
         puts stdout "No simulator selected, run \"select_sumulator\"."
     }
@@ -238,6 +256,8 @@ proc run_regression {args} {
         } else {
             exec >&@stdout vivado -notrace -mode batch -source $regression_script -tclargs IN_SIMU_ENVIRONMENT $::DEFAULT_SIMULATOR
         }
+    } elseif {$::DEFAULT_SIMULATOR eq "xm"} {
+        exec >&@stdout simvison -input "$variable_list;source $regression_script;quit"        
     } else {
         puts stdout "No simulator selected, run \"select_sumulator\"."
     }
@@ -302,7 +322,7 @@ proc regression_coverage_parse {} {
 #               -> Prints the default command line arguments passed to testcases and regression.
 # Purpose: Prints the default command line arguments passed to testcases and regression.
 proc config_print {} {
-    set fp [open $::SCRPTCFGDIR/$::CMD_LINE_OPTIONS_DEFAULT r]
+    set fp [open $::CMD_LINE_OPTIONS_DEFAULT r]
 
     # Don't start search for "# -" until the script has detected the first header.
     set begun 0
@@ -500,10 +520,10 @@ proc _set_sim_args {args} {
     set fp [open $::CMD_LINE_OPTIONS_AUTOGEN w]
 
     if {[regexp {\-logging} $args] } {
-        puts $fp {set ::CMD_ARG_LOGGING 1}
+        puts $fp {set ::CMD_ARG_WAVELOGGING 1}
     } 
     if {[regexp {\-logging_off} $args] } {
-        puts $fp {set ::CMD_ARG_LOGGING 0}
+        puts $fp {set ::CMD_ARG_WAVELOGGING 0}
     }
 
     if {[regexp {\-optimize} $args] } {
@@ -560,6 +580,10 @@ proc _set_sim_args {args} {
     } 
     if {[regexp {\-report_off} $args] } {
         puts $fp {set ::CMD_ARG_REPORT 0}
+    }
+
+    if {[regexp {\-use_uvm} $args] } {
+	puts $fp {set ::CMD_ARG_UVM 1}
     }
 
     close $fp

@@ -1,5 +1,7 @@
 # --------------------------------------------------------------------//
-# Copyright (C) 2018 Fidus Systems Inc.
+# Copyright (C) 2006-2023 Fidus Systems Inc. 
+# SPDX-License-Identifier: Apache-2.0 OR MIT
+# The licenses stated above take precedence over any other contracts, agreements, etc.
 #
 # Project       : simu
 # Author        : Dessislav Valkov
@@ -11,7 +13,7 @@
 # Updated       : 2019-10-25 / author - comment
 # --------------------------------------------------------------------//
 
-puts stdout "==============tccommon_tc_config.tcl================\n"
+puts_debug1 "==============tccommon_tc_config.tcl================\n"
 
 ############################ Prepare Simulation ############################################
 # A new tc will be run in a new sim environment, new log and new results folder are created

@@ -1,6 +1,8 @@
 # ---------------------------------------------------------------------------//
 #
-# Copyright (C) 2018 Fidus Systems Inc.
+# Copyright (C) 2006-2023 Fidus Systems Inc. 
+# SPDX-License-Identifier: Apache-2.0 OR MIT
+# The licenses stated above take precedence over any other contracts, agreements, etc.
 #
 # Project       : simu
 # Author        : Dessislav Valkov
@@ -12,10 +14,14 @@
 # Updated       : date / author - comments
 #-----------------------------------------------------------------------------//
 
-puts stdout "==============tccommon_execute_compile_all.tcl================\n"
+puts_debug1 "==============tccommon_execute_compile_all.tcl================\n"
 
 # Compile TB, BFMs, DUT, libs by calling compile_all_xxx.tcl in the TC folder
-if {[string equal $::DEFAULT_SIMULATOR vsim]} {source $TCSUBDIR/compile_all_vsim.tcl}
-if {[string equal $::DEFAULT_SIMULATOR xsim]} {source $TCSUBDIR/compile_all_xsim.tcl}
-if {[string equal $::DEFAULT_SIMULATOR ahdl_gui] || [string equal $::DEFAULT_SIMULATOR ahdl_sh]} {source $TCSUBDIR/compile_all_activehdl.tcl}
 
+set simulator $::DEFAULT_SIMULATOR
+if {[string equal $::DEFAULT_SIMULATOR ahdl_gui] || [string equal $::DEFAULT_SIMULATOR ahdl_sh]} {set simulator activehdl}
+if {[file exist "$TCSUBDIR/compile_all_$simulator.tcl"]} {
+    source "$TCSUBDIR/compile_all_$simulator.tcl"
+} else {
+    source "$TCSUBDIR/compile_all.tcl"
+}

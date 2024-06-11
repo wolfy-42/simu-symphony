@@ -1,6 +1,8 @@
 # ---------------------------------------------------------------------------//
 #
-# Copyright (C) 2018 Fidus Systems Inc.
+# Copyright (C) 2006-2023 Fidus Systems Inc. 
+# SPDX-License-Identifier: Apache-2.0 OR MIT
+# The licenses stated above take precedence over any other contracts, agreements, etc.
 #
 # Project       : simu
 # Author        : Dessislav Valkov
@@ -12,10 +14,11 @@
 # Updated       : date / author - comments
 #-----------------------------------------------------------------------------//
 
-puts stdout "==============tccommon_init_sim.tcl================"
+puts_debug1 "==============tccommon_init_sim.tcl================"
 
 # Ensure in new sim environment
-catch [eval $::SIMULATOR_QUIT]
+eval $::SIMULATOR_QUIT
+
 puts stdout "Quit simulation"
 
 # Create result_rtl if it doesn't already exist.
@@ -24,6 +27,9 @@ if [file exists "$TCSUBDIR/result_rtl"] {
         file mkdir "$TCSUBDIR/result_rtl"
         puts stdout "Created result_rtl log folder"
     }
+
+# Clear previous text logs for a testcase
+text_logs_init
 
 # Close current log file, and open new transcript file
 transcript_reset "$TCSUBDIR/result_rtl/$TCFILENAME.log"
