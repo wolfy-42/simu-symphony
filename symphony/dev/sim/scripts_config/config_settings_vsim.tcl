@@ -91,7 +91,8 @@ global OPTIMIZATION_INVOCATION
 
 # Appended to simulation command if optimizations on or off
 set OPTIMIZATION_ON "work.tb_opt"
-set OPTIMIZATION_OFF "work.tb -novopt"
+#set OPTIMIZATION_OFF "work.tb -novopt" TODO: deprecated -novopt
+set OPTIMIZATION_OFF "work.tb "
 
 set OPTIMIZATION_INVOCATION "vopt +acc tb -o tb_opt"
 
