@@ -1,6 +1,8 @@
 //*--------------------------------------------------------------------//
 //
-// Copyright (C) 2007 Fidus Systems Inc.
+// Copyright (C) 2006-2023 Fidus Systems Inc. 
+// SPDX-License-Identifier: Apache-2.0 OR MIT
+// The licenses stated above take precedence over any other contracts, agreements, etc.
 //
 // Project       : simu
 // Author        : Dessislav Valkov
@@ -14,13 +16,17 @@
 
 package sim_management_pkg;
 
+`define CMD_ARG_COLOUR 1
+
+
    localparam QUIET = 1;
    enum {
       ERRLEVEL_PASS    = -1,
       ERRLEVEL_MESSAGE = 0,
-      ERRLEVEL_WARNING = 1,
-      ERRLEVEL_ERROR   = 2,
-      ERRLEVEL_FATAL   = 3
+      ERRLEVEL_MESSAGEBOLD = 1,
+      ERRLEVEL_WARNING = 2,
+      ERRLEVEL_ERROR   = 3,
+      ERRLEVEL_FATAL   = 4
    } eERRLEVEL;
 
 class sim_management ;
@@ -30,6 +36,7 @@ class sim_management ;
    static string debug = "on";  // "on", "off", "all" to report all modules debug messages
    static string debug_file_names [string];
    static bit initDone = 0;
+   static string testcase_name = "not_initialized_testcase_name";   
    static event allBfmsPleaseDoEndOfSimCheck;
 
    `ifdef XILINX_SIMULATOR  // xsim does not support static events
@@ -56,23 +63,34 @@ class sim_management ;
 // \033[7;#m - colors the background according to #
 // \033[9;#m - colors text and strikes it
 
-   static string colour_def = "\033[0m"; // default consol colour
-   static string colour_tmp = "\033[0m"; // temporary colour
-   static string colour_red = "\033[1;31m";
-   static string colour_dred = "\033[0;31m";
-   static string colour_green = "\033[1;32m";
-   static string colour_dgreen = "\033[0;32m"; // dark green
-   static string colour_yellow = "\033[0;33m"; // yellow
-   static string colour_blue = "\033[1;34m";
-   static string colour_dblue = "\033[0;34m";  // dark blue
-   static string colour_cyan = "\033[1;36m";
-   static string colour_dcyan = "\033[0;36m";
-   static string colour_purple = "\033[1;35m";
-   static string colour_dpurple = "\033[0;35m";
-   static string colour_brown = "\033[1;33m";
-   static string colour_dbrown = "\033[0;33m";
-   static string colour_bold = "\033[1;1m";
-   static string colour_inverse = "\033[1;7m";
+    static string colour_def = (`CMD_ARG_COLOUR == 0) ? "" :  "\033[0m"; // default consol colour
+    static string colour_tmp = (`CMD_ARG_COLOUR == 0) ? "" :  "\033[0m"; // temporary colour
+    static string colour_red = (`CMD_ARG_COLOUR == 0) ? "" :  "\033[1;31m";
+    static string colour_dred = (`CMD_ARG_COLOUR == 0) ? "" :  "\033[0;31m";
+    static string colour_green = (`CMD_ARG_COLOUR == 0) ? "" :  "\033[1;32m";
+    static string colour_dgreen = (`CMD_ARG_COLOUR == 0) ? "" :  "\033[0;32m"; // dark green
+    static string colour_yellow = (`CMD_ARG_COLOUR == 0) ? "" :  "\033[0;33m"; // yellow
+    static string colour_blue = (`CMD_ARG_COLOUR == 0) ? "" :  "\033[1;34m";
+    static string colour_dblue = (`CMD_ARG_COLOUR == 0) ? "" :  "\033[0;34m";  // dark blue
+    static string colour_cyan = (`CMD_ARG_COLOUR == 0) ? "" :  "\033[1;36m";
+    static string colour_dcyan = (`CMD_ARG_COLOUR == 0) ? "" :  "\033[0;36m";
+    static string colour_purple = (`CMD_ARG_COLOUR == 0) ? "" :  "\033[1;35m";
+    static string colour_dpurple = (`CMD_ARG_COLOUR == 0) ? "" :  "\033[0;35m";
+    static string colour_brown = (`CMD_ARG_COLOUR == 0) ? "" :  "\033[1;33m";
+    static string colour_dbrown = (`CMD_ARG_COLOUR == 0) ? "" :  "\033[0;33m";
+    static string colour_bold = (`CMD_ARG_COLOUR == 0) ? "" :  "\033[1;1m";
+    static string colour_inverse = (`CMD_ARG_COLOUR == 0) ? "" :  "\033[1;7m";
+
+   static int seed = 0;
+
+   // set seed  
+   static function void set_seed (int seedin = 0);
+      seed = seedin;
+   endfunction;
+
+   static function get_seed ();
+      return seed;
+   endfunction;
 
    // works only with 32bit Hex Max!!
    static function void print (string file_name = "file_name",
@@ -247,6 +265,39 @@ class sim_management ;
             msg,in1,in2,in3,in4,in5,in6,in7,in8,in9,in10,in11,in12,in13,in14,in15,in16,in17,in18,in19,in20);
    endfunction // printMessage
 
+   //* Task printMessageBold
+   // Purpose: To print a message in bold, starting with the
+   //          name of the module which invoked this task and the label PASS.
+   // Inputs : string caller --> The name of the module who invoked this task
+   //          string msg    --> the warning message to be displayed
+   // Outputs: none
+   static function void printMessageBold (input string filename,
+                           input string msg,
+                           real in1 = "",
+                           real in2 = "",
+                           real in3 = "",
+                           real in4 = "",
+                           real in5 = "",
+                           real in6 = "",
+                           real in7 = "",
+                           real in8 = "",
+                           real in9 = "",
+                           real in10 = "",
+                           real in11 = "",
+                           real in12 = "",
+                           real in13 = "",
+                           real in14 = "",
+                           real in15 = "",
+                           real in16 = "",
+                           real in17 = "",
+                           real in18 = "",
+                           real in19 = "",
+                           real in20 = ""
+                      );
+         printLevel(filename, ERRLEVEL_MESSAGEBOLD,
+            msg,in1,in2,in3,in4,in5,in6,in7,in8,in9,in10,in11,in12,in13,in14,in15,in16,in17,in18,in19,in20);
+   endfunction // printMessageBold
+
    //* Task printPass
    // Purpose: To print a message in a standard format, starting with the
    //          name of the module which invoked this task and the label PASS.
@@ -419,9 +470,14 @@ class sim_management ;
             end
          ERRLEVEL_MESSAGE :
             begin
-               colour_tmp = colour_bold;
+               colour_tmp = colour_def;
                filename = {"  MESSAGE (", filename, "): "};
             end
+         ERRLEVEL_MESSAGEBOLD :
+            begin
+               colour_tmp = colour_bold;
+               filename = {"  MESSAGE (", filename, "): "};
+            end            
          ERRLEVEL_WARNING :
             begin
                filename = {" >WARNING      (", filename, "): "};
@@ -486,10 +542,13 @@ class sim_management ;
         input string sname,
         input integer actual,
         input integer expected,
-        input bit quiet = 0
+        input bit quiet = 0,
+        input integer epsilon = 0
     );
         string message;
-        if (actual !== expected)
+        integer delta = actual - expected;
+
+        if (delta > epsilon || delta < -epsilon)
         begin
             message = $sformatf("%s had unexpected value (%0d), expected (%0d)",
                 sname, actual, expected);
@@ -504,6 +563,35 @@ class sim_management ;
             globalPassCounter =  globalPassCounter + 1;
         end
    endfunction :  checkInt
+
+   static function void checkTime (
+        input string filename,
+        input integer errlevel,
+        input string sname,
+        input time actual,
+        input time expected,
+        input bit quiet = 0,
+        input longint epsilon = 0
+    );
+        string message;
+        longint delta = actual - expected;
+
+        $timeformat(-9, 3, "ns", 0);
+        if (delta > epsilon || delta < -epsilon)
+        begin
+            message = $sformatf("%s had unexpected value (%0t), expected (%0t), delta (%0t)",
+                sname, actual, expected, delta);
+            printLevel(filename, errlevel, message);
+        end
+        else if (!quiet)
+        begin
+            printPass(filename, $sformatf("%s matched expected value (%0t)", sname, actual));
+        end
+        else
+        begin
+            globalPassCounter =  globalPassCounter + 1;
+        end
+   endfunction :  checkTime
 
    static function void checkIntRange(
         input string filename,
@@ -550,10 +638,11 @@ class sim_management ;
    //* =========================== initSim task ==========================
    //* Task initSim
    // Purpose: This task reports the testcase name, sets the debug level
-   // and starts teh fatal error monitor.
+   // and starts the fatal error monitor.
    // Inputs : none
    // Outputs: none
    static task initSim(string filename, bit suppressFatal = 0, string debug_in = "off");
+   testcase_name = filename;   
       if(!initDone)
       begin
          debug = debug_in;
@@ -619,9 +708,13 @@ class sim_management ;
          else
            $display ("\n\nSIMULATION STATUS: FAIL\n\n");
 
-         $write("%c[0m",27); // default console colour
+         $display ({"TESTCASE NAME: ",testcase_name});
+         $display ("SEED: %d",seed);
 
-         $display ("\n\nColours can be turned off in sim_managemnt_pkg.v\n\n");
+         $write("%c[0m",27); // default console colour
+         $display ();
+
+
          $stop(2);
       end
    endtask // testComplete

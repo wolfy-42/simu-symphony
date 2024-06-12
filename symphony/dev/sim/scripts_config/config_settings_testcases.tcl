@@ -13,7 +13,7 @@
 #-----------------------------------------------------------------------------//
 
 
-##################### Ignored testcases setup - Black-listed testcases TODO: why not taken in account? ##################
+##################### Ignored testcases setup - Black-listed testcases ##################
 # proc getRegressionTCIgnoreList
 # Purpose: Returns a list of all testcases (tc_example.tcl) which should NOT be
 #          included in the regression. To add TCs to this ignore list,
