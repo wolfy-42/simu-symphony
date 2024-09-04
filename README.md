@@ -34,3 +34,5 @@ vsim -c -do ../testcases/tc_reset/tc_reset.tcl -do quit
 cd symphony/dev/sim/run
 vsim -c -do ../scripts_configure/run_regression.tcl -do quit
 ```
+# Documentation
+[Complete documentation](https://github.com/wolfy-42/simu-documentation)
