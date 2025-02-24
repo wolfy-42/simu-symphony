@@ -1,0 +1,11 @@
+This folder contains the ethernet BFM generator classes.
+The env directory contains the packet generator and axi streaming driver
+classes. The driver can be replaced if a different dut interface is required.
+
+The packets can be generated randomly or from a packet file.
+
+The packet class is contained in the receiver env directory.
+
+
+
+

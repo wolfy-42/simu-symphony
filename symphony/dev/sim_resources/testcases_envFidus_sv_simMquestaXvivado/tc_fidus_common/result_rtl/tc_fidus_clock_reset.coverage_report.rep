@@ -1,0 +1,22 @@
+Coverage Report Summary Data by instance
+
+=================================================================================
+=== Instance: /tb/dut_inst/module1_inst
+=== Design Unit: work.module1
+=================================================================================
+    Enabled Coverage              Bins      Hits    Misses  Coverage
+    ----------------              ----      ----    ------  --------
+    Statements                       2         2         0   100.00%
+    Toggles                        146        11       135     7.53%
+
+=================================================================================
+=== Instance: /tb/dut_inst
+=== Design Unit: work.top_simuverilog
+=================================================================================
+    Enabled Coverage              Bins      Hits    Misses  Coverage
+    ----------------              ----      ----    ------  --------
+    Toggles                        152        11       141     7.23%
+
+
+Total Coverage By Instance (filtered view): 52.66%
+

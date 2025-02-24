@@ -1,0 +1,9 @@
+#!/bin/env tclsh
+
+cd ../../run
+
+source ../scripts_config/run_simu.tcl
+
+run_testcase ../testcases_envFidus_sv_simMquestaXvivado/tc_fidus_eth_bfm/tc_fidus_eth_pkts.tcl -logging -optimize -seed 123
+
+exit

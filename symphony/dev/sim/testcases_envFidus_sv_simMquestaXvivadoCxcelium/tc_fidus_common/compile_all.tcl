@@ -42,7 +42,7 @@ suvlog  "-sv $TIMESCALE_OPT $TCTIMESCALE $COVERAGE_PARAMS $SIMDIR/../sources/top
 }
 
 # CORE
-suvlog  "-sv $TIMESCALE_OPT $TCTIMESCALE $SIMDIR/./cores/xilinx/glbl.v"
+#suvlog  "-sv $TIMESCALE_OPT $TCTIMESCALE $SIMDIR/./cores/xilinx/glbl.v"
 
 # BFM
 puts "Compile BFM..."

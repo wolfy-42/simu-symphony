@@ -16,22 +16,56 @@
 
 puts_debug1 "==============tccommon_init_sim.tcl================"
 
-# Ensure in new sim environment
-eval $::SIMULATOR_QUIT
+if { ![info exists ::TCTYPE] } {
+    puts stdout "Executing HDL config flow ..."
 
-puts stdout "Quit simulation"
+    # Ensure in new sim environment
+    eval $::SIMULATOR_QUIT
 
-# Create result_rtl if it doesn't already exist.
-if [file exists "$TCSUBDIR/result_rtl"] {
-    } else {
-        file mkdir "$TCSUBDIR/result_rtl"
-        puts stdout "Created result_rtl log folder"
-    }
+    puts stdout "Quit simulation"
 
-# Clear previous text logs for a testcase
-text_logs_init
+    # Create result_rtl folder if it doesn't already exist.
+    if [file exists "$TCSUBDIR/result_rtl"] {
+        } else {
+            file mkdir "$TCSUBDIR/result_rtl"
+            puts stdout "Created result_rtl log folder"
+        }
 
-# Close current log file, and open new transcript file
-transcript_reset "$TCSUBDIR/result_rtl/$TCFILENAME.log"
+    # Clear previous text logs for a testcase
+    text_logs_init
 
-puts stdout "\n"
+    # Close current log file, and open new transcript file
+    transcript_reset "$TCSUBDIR/result_rtl/$TCFILENAME.log"
+
+    puts stdout "\n"
+
+} elseif {[string equal $::TCTYPE "hls_cppsim"] 
+    || [string equal $::TCTYPE "hls_csynth"] 
+    || [string equal $::TCTYPE "hls_cosim"]
+    || [string equal $::TCTYPE "hls_export"]} {
+    puts stdout "Executing HLS config flow ..."
+
+    # Create result_rtl folder if it doesn't already exist.
+    if [file exists "$TCSUBDIR/result_rtl"] {
+        } else {
+            file mkdir "$TCSUBDIR/result_rtl"
+            puts stdout "Created result_rtl log folder"
+        }
+
+    # Create vitis folder if it doesn't already exist.
+    if [file exists "$BUILDSDIR/vitis"] {
+        } else {
+            file mkdir "$BUILDSDIR/vitis"
+            puts stdout "Created builds/vitis build folder"
+        }
+
+    # Clear previous text logs for a testcase
+    hls_text_logs_init
+
+    # Close current log file, and open new transcript file
+    hls_transcript_reset 
+
+    puts stdout "\n"
+
+
+}

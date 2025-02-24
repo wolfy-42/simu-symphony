@@ -1,0 +1,53 @@
+HLS:
+project creation
+v   add c rtl files
+v	 add directives files (not recomended)
+v   add c tb files
+v   add c tc files
+v   add config ini file
+v   add cppsim config
+v   add synth config
+v   add cosim config
+v   add export config
+
+flow run
+x   call hls in interactive mode (not good idea, use project as intermediate step to preserve state)
+v   fix paths ro run
+v   replace next tc file (file path/name)(using default tc)
+v   simu config hls tcl script
+v   all logs capture in files
+v   one tc tcl for all languges - main scripts adds dummy TB and TC that always pass
+
+cppsim/synth/cosim/export/implement
+v   tc switches tcl for cppsim and cosim using local variables
+v   sppsim (csim) 
+v   synth
+v   cosim
+v   export
+   add implement step
+   add colour status at end with last lines to every hls stage 
+   code all simu messages with common start tag
+
+run all tc type runs
+v   fix proj_create.tcl if case for default tc and simu tc - now runs always without tb/tc
+x   shrink the csim/synth/cosim/export tcl files
+v   reduce TC paths to set
+v   rename to autogen_....
+v   aggregate sim logs to one
+   every tc.tcl runs a specific call, not all previous
+....   colour parsing status of default vitis_hls stages of cppsim/synth/cosim/export/implement
+
+regression
+v   hls uses only manual regression lists
+v   run dir path from proj dir is a hard path in tc, needs to be flexible
+v   sim management lib common prints & err counters
+   colour global status
+   regress parsing status of errors
+
+Low priority
+   regression mixed with other languges
+   report all stages general pass info at the end
+   add disable settings for proj deletion
+   addin tbtc default files
+   sim management .h has to be in TBTC folder to compile TC 
+   split TB from TC, TC is top and has main function and main sequence, TB is included code in the TC before main and TC after main

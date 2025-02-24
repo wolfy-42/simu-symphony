@@ -1,0 +1,11 @@
+This folder contains the ethernet BFM receiver rtl and classes.
+The rtl directory contains the ethernet bfm generator top level, packages and
+interfaces.
+The env directory contains the packet, axi streaming packet monitor and checker
+classes. The monitor can be replaced if a different dut interface is required.
+
+The packet class contained in eth_packet.sv provides packet generator 
+programmability of various ethernet level and ip level fields as well as
+packet length. It also extracts and prints header fields for the packet receiver.
+
+

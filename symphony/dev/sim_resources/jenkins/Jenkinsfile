@@ -1,0 +1,77 @@
+pipeline {
+  agent any
+  stages {
+    stage('Prequisites') {
+      parallel {
+        stage('Quartus') {
+          steps {
+            sh '''
+cd ./ip/simu/simu/dev/sim/run
+bash ../jenkins/optionBuild_dependencies_Iquartus_bash.sh
+grep "Info: Finished: Create testbench Platform Designer system"  ../testcases_envIntel_sv_simMquesta/tc_intel_quartus/intel_avalon_example_system/intel_avalon_example_system_generation.rpt'''
+          }
+        }
+
+        stage('Vivado') {
+          steps {
+            sh '''
+cd ./ip/simu/simu/dev/sim/run
+bash ../jenkins/optionBuild_dependencies_Xvivado_bash.sh
+grep "Exiting Vivado at" ../bfms/xilinx_axi_vip/vivado.log && grep "Exiting Vivado at" ../../builds/vivado/projects/vivado.log'''
+          }
+        }
+
+        stage('Questa/Vivado Simlib') {
+          steps {
+            sh '''
+cd ./ip/simu/simu/dev/sim/run
+bash ../jenkins/optionBuild_dependencies_XvivadoMquestaSimLib_bash.sh
+grep "========= COPY ABOVE HERE =========================================" ./vivado.log'''
+          }
+        }
+
+      }
+    }
+
+    stage('envFidus_sv_v_vhld_simMquesta') {
+      steps {
+        sh '''
+cd ./ip/simu/simu/dev/sim/run
+bash ../jenkins/optionDefaults_envFidus_sv_v_vhld_simMquesta_bash_regression.sh
+grep "=============== END OF TC PASS/FAIL LIST =====================" ../regression_results/regression_results_all.log
+'''
+      }
+    }
+
+    stage('envFidus_sv_v_vhld_simMquesta_tclsh') {
+      steps {
+        sh '''cd ./ip/simu/simu/dev/sim/run
+bash ../jenkins/optionDefaults_envFidus_sv_v_vhld_simMquesta_tclsh_regression.sh
+
+grep "=============== END OF TC PASS/FAIL LIST =====================" ../regression_results/regression_results_all.log
+'''
+      }
+    }
+
+    stage('envIntel_sv_simMquesta_bash') {
+      steps {
+        sh '''cd ./ip/simu/simu/dev/sim/run
+bash ../jenkins/optionIntel.0000_envIntel_sv_simMquesta_bash_regression.sh
+
+grep "=============== END OF TC PASS/FAIL LIST =====================" ../regression_results/regression_results_all.log
+'''
+      }
+    }
+
+    stage('envXilinx_sv_simMquesta_bash') {
+      steps {
+        sh '''cd ./ip/simu/simu/dev/sim/run
+bash ../jenkins/optionXilinx.0000_envXilinx_sv_simMquesta_bash_regression.sh
+
+grep "=============== END OF TC PASS/FAIL LIST =====================" ../regression_results/regression_results_all.log
+'''
+      }
+    }
+
+  }
+}

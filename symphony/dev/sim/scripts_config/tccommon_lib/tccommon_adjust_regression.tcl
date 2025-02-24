@@ -16,7 +16,6 @@
 
 puts_debug1 "==============tccommon_adjust_regression.tcl================"
 
-puts stdout "Checking if regression is set or not."
 
 # The regression script can disable compilation for a testcase if it has already
 # been done. 
@@ -28,3 +27,4 @@ if {[info exists ::REGRESSION]} {
     }
 puts stdout "Regression is set to $::REGRESSION "    
 }
+

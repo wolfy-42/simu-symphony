@@ -1,0 +1,375 @@
+m255
+K4
+z2
+Z0 !s99 nomlopt
+!s11f vlog 2022.2 2022.04, Apr 25 2022
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z1 d/home/work/des.v/trunk/simu/simu/dev/sim/run
+Yaxi4lite_intf
+Z2 DXx6 sv_std 3 std 0 22 9oUSJO;AeEaW`l:M@^WG92
+Z3 !s110 1718154681
+!i10b 1
+!s100 fW[?9TiVJIbE@ni^XL0Z60
+ImOK:_Z`CPdLh4[zZS4C5M3
+S1
+R1
+Z4 w1718152436
+Z5 8/home/work/des.v/trunk/simu/simu/dev/sim/./bfms/fidus_axi4lite_mst_bfm.sv
+Z6 F/home/work/des.v/trunk/simu/simu/dev/sim/./bfms/fidus_axi4lite_mst_bfm.sv
+!i122 7
+L0 759 0
+Z7 VDg1SIo80bB@j0V0VzS_@n1
+Z8 OL;L;2022.2;75
+r1
+!s85 0
+31
+Z9 !s108 1718154681.000000
+Z10 !s107 /home/work/des.v/trunk/simu/simu/dev/sim/./bfms/fidus_axi4lite_mst_bfm.sv|
+Z11 !s90 -incr|-sv|-timescale|1ns/100ps|/home/work/des.v/trunk/simu/simu/dev/sim/./bfms/fidus_axi4lite_mst_bfm.sv|
+!i113 0
+Z12 o-sv -timescale 1ns/100ps -L mtiAvm -L mtiRnm -L mtiOvm -L mtiUvm -L mtiUPF -L infact
+Z13 tCvgOpt 0
+Yclk_bfm_if
+R2
+R3
+!i10b 1
+!s100 7@R1]KjYeZ0OlRiA2JP:A2
+IC5;IjhzUI7Y41Sc=n`Pog2
+S1
+R1
+R4
+Z14 8/home/work/des.v/trunk/simu/simu/dev/sim/./bfms/fidus_clock_gen_bfm.sv
+Z15 F/home/work/des.v/trunk/simu/simu/dev/sim/./bfms/fidus_clock_gen_bfm.sv
+!i122 6
+L0 338 0
+R7
+R8
+r1
+!s85 0
+31
+R9
+Z16 !s107 /home/work/des.v/trunk/simu/simu/dev/sim/./bfms/fidus_clock_gen_bfm.sv|
+Z17 !s90 -incr|-sv|-timescale|1ns/100ps|/home/work/des.v/trunk/simu/simu/dev/sim/./bfms/fidus_clock_gen_bfm.sv|
+!i113 0
+R12
+R13
+Xfidus_axi4lite_mst_bfm_pkg
+!s115 axi4lite_intf
+R2
+Z18 DXx4 work 18 sim_management_pkg 0 22 8HVAM7P<4XfCWhECVm2^b3
+R3
+!i10b 1
+!s100 F5J2^HLkik>c7UH^9?8k=2
+I1NGjVaO>loUC:[flAokj]1
+S1
+R1
+R4
+R5
+R6
+!i122 7
+L0 52 0
+V1NGjVaO>loUC:[flAokj]1
+R8
+r1
+!s85 0
+31
+R9
+R10
+R11
+!i113 0
+R12
+R13
+Xfidus_clock_gen_bfm_pkg
+!s115 clk_bfm_if
+R2
+R18
+R3
+!i10b 1
+!s100 `LFnTgKcBUi4Vgo8XikD33
+I^?=J_]5X>U5TLjkO^`UFm0
+S1
+R1
+R4
+R14
+R15
+!i122 6
+L0 35 0
+V^?=J_]5X>U5TLjkO^`UFm0
+R8
+r1
+!s85 0
+31
+R9
+R16
+R17
+!i113 0
+R12
+R13
+Xfidus_reset_gen_bfm_pkg
+!s115 reset_bfm_if
+R2
+R18
+R3
+!i10b 1
+!s100 oXn^>23OH[U8e04oSk:DZ2
+IOHIEKo=WlYIHn5O11e`Uj3
+S1
+R1
+R4
+Z19 8/home/work/des.v/trunk/simu/simu/dev/sim/./bfms/fidus_reset_gen_bfm.sv
+Z20 F/home/work/des.v/trunk/simu/simu/dev/sim/./bfms/fidus_reset_gen_bfm.sv
+!i122 5
+L0 25 0
+VOHIEKo=WlYIHn5O11e`Uj3
+R8
+r1
+!s85 0
+31
+R9
+Z21 !s107 /home/work/des.v/trunk/simu/simu/dev/sim/./bfms/fidus_reset_gen_bfm.sv|
+Z22 !s90 -incr|-sv|-timescale|1ns/100ps|/home/work/des.v/trunk/simu/simu/dev/sim/./bfms/fidus_reset_gen_bfm.sv|
+!i113 0
+R12
+R13
+vglbl
+R2
+Z23 !s110 1718154680
+!i10b 1
+!s100 XaXFBflUTRVjlgE^zNcX11
+IiDG<ML6GnbMDZ=a_C>jM10
+S1
+R1
+R4
+8/home/work/des.v/trunk/simu/simu/dev/sim/./cores/xilinx/glbl.v
+F/home/work/des.v/trunk/simu/simu/dev/sim/./cores/xilinx/glbl.v
+!i122 2
+L0 4 55
+R7
+R8
+r1
+!s85 0
+31
+Z24 !s108 1718154680.000000
+!s107 /home/work/des.v/trunk/simu/simu/dev/sim/./cores/xilinx/glbl.v|
+!s90 -incr|-sv|-timescale|1ns/100ps|/home/work/des.v/trunk/simu/simu/dev/sim/./cores/xilinx/glbl.v|
+!i113 0
+R12
+R13
+vlib_math
+R2
+R18
+R3
+!i10b 1
+!s100 G0XHjbEkG6_fHlCLNdZ>?3
+I[UzJ3RIM_Te8d6CcamZ592
+S1
+R1
+R4
+8/home/work/des.v/trunk/simu/simu/dev/sim/./libraries/lib_math.v
+F/home/work/des.v/trunk/simu/simu/dev/sim/./libraries/lib_math.v
+!i122 8
+L0 50 242
+R7
+R8
+r1
+!s85 0
+31
+R9
+!s107 /home/work/des.v/trunk/simu/simu/dev/sim/./libraries/lib_math.v|
+!s90 -incr|-sv|-timescale|1ns/100ps|-define|SEED_INITIAL_VALUE=1718154680|/home/work/des.v/trunk/simu/simu/dev/sim/./libraries/lib_math.v|
+!i113 0
+o-sv -timescale 1ns/100ps -define SEED_INITIAL_VALUE=1718154680 -L mtiAvm -L mtiRnm -L mtiOvm -L mtiUvm -L mtiUPF -L infact
+R13
+vmodule1
+R2
+R23
+!i10b 1
+!s100 2`^zcGlQ_Ezzb[`5Jl04D0
+ISGIQnl@mO_o9XQRCRNMYX2
+S1
+R1
+R4
+8/home/work/des.v/trunk/simu/simu/dev/sim/../sources/module1.v
+F/home/work/des.v/trunk/simu/simu/dev/sim/../sources/module1.v
+!i122 0
+L0 20 38
+R7
+R8
+r1
+!s85 0
+31
+R24
+!s107 /home/work/des.v/trunk/simu/simu/dev/sim/../sources/./include_parameters.v|/home/work/des.v/trunk/simu/simu/dev/sim/../sources/module1.v|
+!s90 -incr|-sv|-timescale|1ns/100ps|+cover=bcefsx|/home/work/des.v/trunk/simu/simu/dev/sim/../sources/module1.v|-incdir|/home/work/des.v/trunk/simu/simu/dev/sim/../sources|
+!i113 0
+Z25 !s102 +cover=bcefsx
+Z26 o-sv -timescale 1ns/100ps +cover=bcefsx -L mtiAvm -L mtiRnm -L mtiOvm -L mtiUvm -L mtiUPF -L infact
+R13
+Yreset_bfm_if
+R2
+R3
+!i10b 1
+!s100 gm?e:P6NOHO:228z`6K=50
+Inamj3b1eDo0;bgDA7VUVa0
+S1
+R1
+R4
+R19
+R20
+!i122 5
+L0 126 0
+R7
+R8
+r1
+!s85 0
+31
+R9
+R21
+R22
+!i113 0
+R12
+R13
+Xsim_management_pkg
+R2
+R23
+!i10b 1
+!s100 @ZNomW_m:LlN_lKz:@b773
+I8HVAM7P<4XfCWhECVm2^b3
+S1
+R1
+w1718154653
+8/home/work/des.v/trunk/simu/simu/dev/sim/./libraries/sim_management_pkg.sv
+F/home/work/des.v/trunk/simu/simu/dev/sim/./libraries/sim_management_pkg.sv
+!i122 3
+L0 17 0
+V8HVAM7P<4XfCWhECVm2^b3
+R8
+r1
+!s85 0
+31
+R24
+!s107 /home/work/des.v/trunk/simu/simu/dev/sim/./libraries/sim_management_pkg.sv|
+!s90 -incr|-sv|-timescale|1ns/100ps|/home/work/des.v/trunk/simu/simu/dev/sim/./libraries/sim_management_pkg.sv|
+!i113 0
+R12
+R13
+vsim_management_verilog
+R2
+R3
+!i10b 1
+!s100 IRLd]BiS=6E5N@IGIdG@K1
+IjESZ;mo5jZmIQ8AWZY4;_3
+S1
+R1
+R4
+8/home/work/des.v/trunk/simu/simu/dev/sim/./libraries/sim_management_verilog.v
+F/home/work/des.v/trunk/simu/simu/dev/sim/./libraries/sim_management_verilog.v
+!i122 4
+L0 34 141
+R7
+R8
+r1
+!s85 0
+31
+R24
+!s107 /home/work/des.v/trunk/simu/simu/dev/sim/./libraries/sim_management_verilog.v|
+!s90 -incr|-sv|-timescale|1ns/100ps|/home/work/des.v/trunk/simu/simu/dev/sim/./libraries/sim_management_verilog.v|
+!i113 0
+R12
+R13
+vtb
+R2
+R18
+Z27 DXx4 work 23 fidus_clock_gen_bfm_pkg 0 22 ^?=J_]5X>U5TLjkO^`UFm0
+Z28 DXx4 work 23 fidus_reset_gen_bfm_pkg 0 22 OHIEKo=WlYIHn5O11e`Uj3
+R3
+!i10b 1
+!s100 [6>R[gF9>o_ko5MGXD0g^1
+I6@KNoDL;;]i:Vg:h]S7D=3
+S1
+R1
+w1711325033
+8/home/work/des.v/trunk/simu/simu/dev/sim/testcases_envFidus_sv_simMquestaXvivadoCxcelium/tc_fidus_common/tb.sv
+F/home/work/des.v/trunk/simu/simu/dev/sim/testcases_envFidus_sv_simMquestaXvivadoCxcelium/tc_fidus_common/tb.sv
+!i122 9
+L0 20 51
+R7
+R8
+r1
+!s85 0
+31
+R9
+!s107 /home/work/des.v/trunk/simu/simu/dev/sim/testcases_envFidus_sv_simMquestaXvivadoCxcelium/tc_fidus_common/tb.sv|
+!s90 -incr|-sv|-timescale|1ns/100ps|/home/work/des.v/trunk/simu/simu/dev/sim/testcases_envFidus_sv_simMquestaXvivadoCxcelium/tc_fidus_common/tb.sv|
+!i113 0
+R12
+R13
+Ttb_opt
+!s11d fidus_reset_gen_bfm_pkg /home/work/des.v/trunk/simu/simu/dev/sim/run/msim/work 1 reset_bfm_if 1 /home/work/des.v/trunk/simu/simu/dev/sim/run/msim/work 
+!s11d fidus_clock_gen_bfm_pkg /home/work/des.v/trunk/simu/simu/dev/sim/run/msim/work 1 clk_bfm_if 1 /home/work/des.v/trunk/simu/simu/dev/sim/run/msim/work 
+R3
+VB8Y8U:a=mWCo;bgiJ;UGh0
+04 2 4 work tb fast 0
+R0
+!s124 OEM100
+o+acc
+R13
+ntb_opt
+OL;O;2022.2;75
+vtest_case
+R2
+R18
+R27
+R28
+R3
+!i10b 1
+!s100 gCOHiWQbS2?nnM=WlIcT90
+IPId6e8RZcDJPPmbJz[=773
+S1
+R1
+w1712281498
+8/home/work/des.v/trunk/simu/simu/dev/sim/testcases_envFidus_sv_simMquestaXvivadoCxcelium/tc_fidus_common/tc_fidus_clock_reset.sv
+F/home/work/des.v/trunk/simu/simu/dev/sim/testcases_envFidus_sv_simMquestaXvivadoCxcelium/tc_fidus_common/tc_fidus_clock_reset.sv
+!i122 10
+L0 20 64
+R7
+R8
+r1
+!s85 0
+31
+R9
+!s107 /home/work/des.v/trunk/simu/simu/dev/sim/testcases_envFidus_sv_simMquestaXvivadoCxcelium/tc_fidus_common/tc_fidus_clock_reset.sv|
+!s90 -incr|-sv|-timescale|1ns/100ps|-define|TCFILENAME=tc_fidus_clock_reset|/home/work/des.v/trunk/simu/simu/dev/sim/testcases_envFidus_sv_simMquestaXvivadoCxcelium/tc_fidus_common/tc_fidus_clock_reset.sv|
+!i113 0
+o-sv -timescale 1ns/100ps -define TCFILENAME=tc_fidus_clock_reset -L mtiAvm -L mtiRnm -L mtiOvm -L mtiUvm -L mtiUPF -L infact
+R13
+vtop_simuverilog
+R2
+R23
+!i10b 1
+!s100 kZC8hGG@P@;IzMi4_OFb`2
+IXci^1fa5B`[COB;O>e_Ec2
+S1
+R1
+R4
+8/home/work/des.v/trunk/simu/simu/dev/sim/../sources/top_simuverilog.v
+F/home/work/des.v/trunk/simu/simu/dev/sim/../sources/top_simuverilog.v
+!i122 1
+L0 19 43
+R7
+R8
+r1
+!s85 0
+31
+R24
+!s107 /home/work/des.v/trunk/simu/simu/dev/sim/../sources/./include_parameters.v|/home/work/des.v/trunk/simu/simu/dev/sim/../sources/top_simuverilog.v|
+!s90 -incr|-sv|-timescale|1ns/100ps|+cover=bcefsx|/home/work/des.v/trunk/simu/simu/dev/sim/../sources/top_simuverilog.v|-incdir|/home/work/des.v/trunk/simu/simu/dev/sim/../sources|
+!i113 0
+R25
+R26
+R13

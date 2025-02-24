@@ -16,6 +16,7 @@
 
 puts_debug1 "==============tccommon_print_config_options.tcl================"
 
+
 # Print configured options.
 if {$::CMD_ARG_WAVELOGGING > 0} {puts stdout "Logging turned ON."
 } else {puts stdout "Wave-logging turned OFF."} 
@@ -54,3 +55,4 @@ set tmp_pwd [pwd]
 puts stdout "$tmp_pwd"
 
 puts stdout "\n"
+

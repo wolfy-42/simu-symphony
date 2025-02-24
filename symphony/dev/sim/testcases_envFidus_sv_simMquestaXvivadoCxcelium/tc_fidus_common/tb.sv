@@ -33,7 +33,7 @@ module tb ();
     ) 
     axi_bfm_channel ();
     
-    // RIPL Library instantiations
+    // DBL Library instantiations
     sim_management_verilog  sim_management_inst ();     // Verilog sim management instance, used by Clock and Reset BFMs
     lib_math                lib_math_inst ();           // Math libraries.
     

@@ -1,0 +1,6 @@
+# do /home/work/des.v/trunk/simu-symphony/symphony/dev/sim/testcases_envFidus_sv_simMquestaXvivadoCxcelium/tc_fidus_common/tc_fidus_clock_reset.tcl
+# tc_fidus_clock_reset
+# /home/work/des.v/trunk/simu/simu/dev/sim/testcases_envFidus_sv_simMquestaXvivadoCxcelium/tc_fidus_common
+#  >&@stdout  vopt +acc    tb -o tb_opt 
+#  >&@stdout  vsim  -permit_unmatched_virtual_intf   -l $::TCSUBDIR/result_rtl/$::TCFILENAME.log -do vsim_wavelog_coverage.tcl 
+# quit

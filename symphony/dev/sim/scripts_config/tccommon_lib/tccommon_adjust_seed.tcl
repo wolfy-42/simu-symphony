@@ -16,6 +16,7 @@
 
 puts_debug1 "==============tccommon_adjust_seed.tcl================"
 
+
 # Dummy value, overwritten by the function below using the command line arguments
 set INITSEED 0
 # Initialize simulation - random seed value, quits simulation, creates a log directory, resets the log file
@@ -28,3 +29,5 @@ if {$::CMD_ARG_SEED eq ""} {
     set INITSEED $::CMD_ARG_SEED
     puts stdout "Seed is forced externally to $INITSEED."
 }
+
+

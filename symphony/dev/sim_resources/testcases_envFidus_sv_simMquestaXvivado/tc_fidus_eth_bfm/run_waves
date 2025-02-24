@@ -1,0 +1,15 @@
+#!/bin/bash -e
+
+# 
+
+# tb=$1
+tb=tc_fidus_eth_pkts
+
+echo "Opening testbench" $tb
+echo
+
+# Run without command file.
+# vsim -view $tb.wlf
+
+# With command file
+vsim -view result_rtl/$tb.wlf -do wave.do

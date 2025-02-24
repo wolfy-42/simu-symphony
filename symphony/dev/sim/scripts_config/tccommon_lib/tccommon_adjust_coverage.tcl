@@ -14,7 +14,7 @@
 # Updated       : date / author - comments
 #-----------------------------------------------------------------------------//
 
-puts_debug1 "==============tccommon_adjust_coverage.tcl================\n"
+puts_debug1 "==============tccommon_adjust_coverage.tcl================"
 
 # Xsim does not support coverage
 # if {[string equal $::DEFAULT_SIMULATOR xsim]} {
@@ -24,3 +24,4 @@ puts_debug1 "==============tccommon_adjust_coverage.tcl================\n"
 # set ::COVERAGE_PARAMS $::COVERAGE_YES_PARAMS
 # if {$::CMD_ARG_COVERAGE == 0} {set ::COVERAGE_PARAMS $::COVERAGE_NO_PARAMS}
 puts stdout "Coverage is set to $COVERAGE_PARAMS"
+

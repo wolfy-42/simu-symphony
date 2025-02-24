@@ -1,0 +1,167 @@
+// ------------------ multiByteReadWrite.v ----------------------
+
+// ---------------------------- i2cSlaveTB_defines.v -----------------
+`define SEND_START 1'b1
+`define SEND_STOP 1'b1
+`define NULL 1'b0
+`define ACK 1'b0
+`define NACK 1'b1
+
+`define DEV_I2C_ADDR 8'hcc 
+
+`define PRER_LO_REG 3'b000
+`define PRER_HI_REG 3'b001
+`define CTR_REG 3'b010
+`define RXR_REG 3'b011
+`define TXR_REG 3'b011
+`define CR_REG 3'b100
+`define SR_REG 3'b100
+
+
+module multiByteReadWrite();
+reg ack;
+reg [31:0] readData;
+reg [7:0] dataByteRead;
+//reg [7:0] dataMSB;
+
+// ------------------ write ----------------------
+task write;
+input [7:0] i2cAddr;
+input [7:0] regAddr;
+input [31:0] data;
+input stop;
+
+begin
+  $write("I2C Write: At [0x%0x] = 0x%0x\n", regAddr, data);
+
+  //i2c address
+  u_wb_master_model.wb_write(1, `TXR_REG, i2cAddr);
+  u_wb_master_model.wb_write(1, `CR_REG , 8'h90); //STA, WR
+  u_wb_master_model.wb_read(1, `SR_REG , dataByteRead);
+  while (dataByteRead[1] == 1'b1) //while trans in progress
+    u_wb_master_model.wb_read(1, `SR_REG , dataByteRead);
+  //$write("I2C device address sent, SR = 0x%x\n", dataByteRead );
+
+  //slave reg address
+  u_wb_master_model.wb_write(1, `TXR_REG, regAddr);
+  u_wb_master_model.wb_write(1, `CR_REG , 8'h10); //WR
+  u_wb_master_model.wb_read(1, `SR_REG , dataByteRead);
+  while (dataByteRead[1] == 1'b1) //while trans in progress
+    u_wb_master_model.wb_read(1, `SR_REG , dataByteRead);
+  //$write("Slave reg address sent, SR = 0x%x\n", dataByteRead );
+
+  //data[31:24]
+  u_wb_master_model.wb_write(1, `TXR_REG, data[31:24]);
+  u_wb_master_model.wb_write(1, `CR_REG , 8'h10); //WR
+  u_wb_master_model.wb_read(1, `SR_REG , dataByteRead);
+  while (dataByteRead[1] == 1'b1) //while trans in progress
+    u_wb_master_model.wb_read(1, `SR_REG , dataByteRead);
+  //$write("Data[31:24] sent, SR = 0x%x\n", dataByteRead );
+
+  //data[23:16]
+  u_wb_master_model.wb_write(1, `TXR_REG, data[23:16]);
+  u_wb_master_model.wb_write(1, `CR_REG , 8'h10); //WR
+  u_wb_master_model.wb_read(1, `SR_REG , dataByteRead);
+  while (dataByteRead[1] == 1'b1) //while trans in progress
+    u_wb_master_model.wb_read(1, `SR_REG , dataByteRead);
+  //$write("Data[23:16] sent, SR = 0x%x\n", dataByteRead );
+
+  //data[15:8]
+  u_wb_master_model.wb_write(1, `TXR_REG, data[15:8]);
+  u_wb_master_model.wb_write(1, `CR_REG , 8'h10); //WR
+  u_wb_master_model.wb_read(1, `SR_REG , dataByteRead);
+  while (dataByteRead[1] == 1'b1) //while trans in progress
+    u_wb_master_model.wb_read(1, `SR_REG , dataByteRead);
+  //$write("Data[15:8] sent, SR = 0x%x\n", dataByteRead );
+
+  //data[7:0]
+  u_wb_master_model.wb_write(1, `TXR_REG, data[7:0]);
+  u_wb_master_model.wb_write(1, `CR_REG , {1'b0, stop, 6'b010000}); //STO?, WR
+  u_wb_master_model.wb_read(1, `SR_REG , dataByteRead);
+  while (dataByteRead[1] == 1'b1) //while trans in progress
+    u_wb_master_model.wb_read(1, `SR_REG , dataByteRead);
+  //$write("Data[7:0] sent, SR = 0x%x\n", dataByteRead );
+
+end
+endtask
+
+// ------------------ read ----------------------
+task read;
+input [7:0] i2cAddr;
+input [7:0] regAddr;
+input [31:0] expectedData;
+output [31:0] data;
+input stop;
+
+begin
+
+  //i2c address
+  u_wb_master_model.wb_write(1, `TXR_REG, i2cAddr);  //write
+  u_wb_master_model.wb_write(1, `CR_REG , 8'h90); //STA, WR
+  u_wb_master_model.wb_read(1, `SR_REG , dataByteRead);
+  while (dataByteRead[1] == 1'b1) //while trans in progress
+    u_wb_master_model.wb_read(1, `SR_REG , dataByteRead);
+  //$write("I2C device address sent, SR = 0x%x\n", dataByteRead );
+  #5000;
+
+  //slave reg address
+  u_wb_master_model.wb_write(1, `TXR_REG, regAddr);
+  u_wb_master_model.wb_write(1, `CR_REG , {1'b0, stop, 6'b010000}); //STO?, WR
+  u_wb_master_model.wb_read(1, `SR_REG , dataByteRead);
+  while (dataByteRead[1] == 1'b1) //while trans in progress
+    u_wb_master_model.wb_read(1, `SR_REG , dataByteRead);
+  //$write("Slave reg address sent, SR = 0x%x\n", dataByteRead );
+  #5000;
+
+  //i2c address
+  u_wb_master_model.wb_write(1, `TXR_REG, {i2cAddr[7:1], 1'b1}); //read
+  u_wb_master_model.wb_write(1, `CR_REG , 8'h90); //STA, WR
+  u_wb_master_model.wb_read(1, `SR_REG , dataByteRead);
+  while (dataByteRead[1] == 1'b1) //while trans in progress
+    u_wb_master_model.wb_read(1, `SR_REG , dataByteRead);
+  //$write("I2C device address sent, SR = 0x%x\n", dataByteRead );
+
+  //data[31:24]
+  u_wb_master_model.wb_write(1, `CR_REG , 8'h20); //RD, ACK
+  u_wb_master_model.wb_read(1, `SR_REG , dataByteRead);
+  while (dataByteRead[1] == 1'b1) //while trans in progress
+    u_wb_master_model.wb_read(1, `SR_REG , dataByteRead);
+  //$write("Data[31:24] rxed, SR = 0x%x\n", dataByteRead );
+  u_wb_master_model.wb_read(1, `RXR_REG, readData[31:24]);
+
+  //data[23:16]
+  u_wb_master_model.wb_write(1, `CR_REG , 8'h20); //RD, ACK
+  u_wb_master_model.wb_read(1, `SR_REG , dataByteRead);
+  while (dataByteRead[1] == 1'b1) //while trans in progress
+    u_wb_master_model.wb_read(1, `SR_REG , dataByteRead);
+  //$write("Data[23:16] rxed, SR = 0x%x\n", dataByteRead );
+  u_wb_master_model.wb_read(1, `RXR_REG, readData[23:16]);
+
+  //data[15:8]
+  u_wb_master_model.wb_write(1, `CR_REG , 8'h20); //RD, ACK
+  u_wb_master_model.wb_read(1, `SR_REG , dataByteRead);
+  while (dataByteRead[1] == 1'b1) //while trans in progress
+    u_wb_master_model.wb_read(1, `SR_REG , dataByteRead);
+  //$write("Data[15:8] rxed, SR = 0x%x\n", dataByteRead );
+  u_wb_master_model.wb_read(1, `RXR_REG, readData[15:8]);
+
+  //data[7:0]
+  u_wb_master_model.wb_write(1, `CR_REG , {1'b0, 1'b0, 6'b101000}); //STO, RD, NAK
+  u_wb_master_model.wb_read(1, `SR_REG , dataByteRead);
+  while (dataByteRead[1] == 1'b1) //while trans in progress
+    u_wb_master_model.wb_read(1, `SR_REG , dataByteRead);
+  //$write("Data[7:0] rxed, SR = 0x%x\n", dataByteRead );
+  u_wb_master_model.wb_read(1, `RXR_REG, readData[7:0]);
+
+  data = readData; 
+  if (data != expectedData) begin
+    $write("***** I2C Read ERROR: At 0x%0x. Expected 0x%0x, got 0x%0x\n", regAddr, expectedData, data);
+    $stop;
+  end
+  else
+    $write("I2C Read: At [0x%0x] = 0x%0x\n", regAddr, data);
+end
+endtask
+
+endmodule
+

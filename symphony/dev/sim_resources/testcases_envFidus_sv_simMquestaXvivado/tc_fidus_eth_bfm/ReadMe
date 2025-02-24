@@ -1,0 +1,16 @@
+This folder contains the ethernet BFM testbench.
+From this directory
+
+run_sim
+
+In eth_bfm_tb.sv packets can be generated randomly or from a packet file by 
+changing the packet_from_file variable. The number of random packets can be 
+changed with num_pkts. The number of file packets is currently restricted to
+one until a standard file format is determined.
+
+The packet class contained in the receiver env directory can be modified
+to generate different types of random or fixed packets using its constraints.
+
+
+
+

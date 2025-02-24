@@ -1,0 +1,110 @@
+TODO:
+
+VERIFY INTEGRATION OF ALL MAJOR FEATUES:
++vsim
++xsim
+hls
+Aldec x2
+...xcelium tc(implemented) & regression(not implemented probably ok without coverage agregation)
+
+TOOLS MIX:
++  add new module group with the new test cases(old are to be renamed to _old)
++  add all tools universal susim/suvlog/suvhld/... command in the tool config files for all vsim/asim/xsim/exsim
++  add xcelium tc support 
+-  add xcelium regression support (not implemented yet)
+
+========================================================
+REGRESSION - vsim
++ colour print - on/off
+colour print for regression result
++script run debug-print make it to far right to be not visible
+regression run hash to be date/time/ms instead
++regression using source list_manual.tcl
+   use regression run hash/date for manual regression as well
+   add regression archive to the manual regression run
+   add run cleanup for manual regression as well
+   add temp run folder deletion for manual regression
+   add regression progress for manual .tcl call
+black list not taken into account
+run_regression threads=3
++run_regression
++  tclsh & simu & ventcl - run_regression (supports threads)
++  tclsh & simu - source .tcl
+   fix run_tc using source
++run regression list in regression_results
++   no list run_regression - auto generation of .txt list (uses white/black listst)
++  .txt & run_regressions- uses provided .txt file with specific syntax
++  .tcl & ventcl & source - uses provided .tcl file to run regrression 
++  .tcl & tclsh & simu & source - same
+archive old runs
+continue run from place it stopped
+
+
+SINGLE TC RUN VSIM:
+tc name and path auto detect
+no bash fpga.sh(vivdo exported script) compile log copy to "results" folder 
+tc run options:
++ tclsh & simu & ventcl - run_testcase (like vsim -c -do) used in auto-regression
++ tclsh & simu          - source
++ tclsh & simu & ventcl - vsim -c -do
++ tclsh shell - source
++ tclsh shell - vsim -c -do
++ bash shell - vsim -c -do 
+  gui&wave shell - source
+  gui&wave shell - vsim -c -do
+  gui&wave &sumu shell - run_testcase
+  gui&wave &sumu shell - source
+  gui&wave &sumu shell - vsim -do  
++vopt option 
++msim/work lib deleted
++results logs deleted
++coverage and aggregation (part of sim .tcl)
++ coverage report/save are not part of vsim call
++ cov params not passed to vlog/vhdl compile
++ tclsh & simu & vendor tcl - vsim -c -do
++ tclsh & simu - source - .tcl optoins not completed all
++ tclsh tcl - source
++ delete reports before run
++eval exit - quit -sim
++add option compile DUT yes/no
+regression_results_all.log doesn't have per module stats
+fix stats naming confising
+show coverage rport in the transcript
+
+
+========================================
+SINGLE TC RUN XSIM:
++in vivado tcl CLI open wave in GUI in sim
++open wave in GUI exit sim
++open wave in GUI from CLI
++open wave in GUI from GUI
++implement sim optimization
+move compile/elab/sim congif before the function
++run tc:
++ vivado tcl source cli (vivado)(vivado -mode batch -source <your_Tcl_script>; start_gui/stop_gui)(vivado -mode batch -source <your_Tcl_script>)
++ tclsh source cli
+- xsim tcl (not possible)
+  tclsh run_testcase
+  vivado tcl run_testcase
+
+
+REGRESSION XSIM:
+run_regression
++ tclsh & simu - source .tcl (amnual)
++ tclsh & simu - run_regression (automatic)
++ vivado tcl - source .tcl (manual regression of .tcl)
++ vivado tcl & simu - run_regression (automatic .txt or provided .txt list)
+manual regression shows stat results two times
+
+===============================================
+SINGLE TC RUN XCELIUM:
++update _xcelium
++2nd update functions internals from vsim
++run to missing sim commands using vsim
+
+===============================================
+SINGLE TC RUN ALDEC:
++update _activehdl
++2nd update functions internals from vsim
++run to missing sim commands using tcl shell
+replace cli gui with new arg

@@ -1,0 +1,5 @@
+# Agents
+${TCUVMDIR}/i2c_agent/sources/i2c_agent_pkg.sv
+
+# IFs
+${TCUVMDIR}/i2c_agent/interfaces/i2c_if.sv

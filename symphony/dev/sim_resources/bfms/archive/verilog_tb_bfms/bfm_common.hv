@@ -1,0 +1,33 @@
+//---------------------------------------------------------------------
+// Copyright (C) 2006-2023 Fidus Systems Inc. 
+// SPDX-License-Identifier: Apache-2.0 OR MIT
+// The licenses stated above take precedence over any other contracts, agreements, etc.
+//---------------------------------------------------------------------
+// File name   : bfm_common.hv
+// Project     : RIPL
+// Author      : Arnold Balisch
+// Created     : Aug 10, 2015
+//---------------------------------------------------------------------
+// Description : BFM common settings and Defines
+//   - Used to standardize BFM <-> testbench library call referencing
+//--------------------------------------------------------------------
+// $Author: Arnold.Balisch $     $Revision: 1.3 $    $Date: 2015-06-19 19:01:38 $
+//--------------------------------------------------------------------
+
+//<> main Simulation_management heirarchy shortcut
+`define SIM       tb.sim_management_inst
+`define MATH      tb.lib_math_inst
+`define TEXT      tb.text_utils_inst
+
+//<> math library shortcuts
+`define V2HEXSTR  tb.text_utils_inst.Vec2HexStr
+`define V2INTSTR  tb.text_utils_inst.Vec2IntStr
+`define V2BINSTR  tb.text_utils_inst.Vec2BinStr
+`define TIME2STR  tb.text_utils_inst.Time2Str
+`define HEX2ASCII tb.text_utils_inst.hex2a
+`define FLOAT2STR tb.text_utils_inst.Float2Str
+
+//<> logic high vs low (single-bit...improves code readability)
+`define HIGH 1'b1
+`define LOW  1'b0
+
